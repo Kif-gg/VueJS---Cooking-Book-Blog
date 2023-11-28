@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
+const trimBody = require("./Middlewares/trimBody");
+
 const connectionStr = "mongodb://127.0.0.1:27017/VueJS-Project-Defence";
 
 start();
@@ -14,6 +16,8 @@ async function start() {
         const app = express();
 
         app.use(express.json());
+        app.use(cookieParser());
+        app.use(trimBody());
 
         app.all("/REST-TEST/*", (req, res) => {
             res.json({ message: `REST SERVICE OPERATIONAL => URL PATH: ${req.url}` });
