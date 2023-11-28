@@ -11,8 +11,8 @@ const recipeSchema = new Schema({
     name: {
         type: String,
         required: [true, "Name is required!"],
-        minLength: [3, "Name length must be at least three characters!"],
-        maxLength: [100, "Name length must not exceed a hundred characters!"]
+        minLength: [3, "Name length must be at least 3 characters!"],
+        maxLength: [100, "Name length must not exceed 100 characters!"]
     },
     category: {
         type: String,
@@ -25,8 +25,8 @@ const recipeSchema = new Schema({
     description: {
         type: String,
         required: [true, "Description is required!"],
-        minLength: [10, "Description length must be at least ten characters!"],
-        maxLength: [200, "Description length must not exceed two hundred characters!"],
+        minLength: [10, "Description length must be at least 10 characters!"],
+        maxLength: [200, "Description length must not exceed 200 characters!"],
     },
     productsNeeded: {
         type: [String],
@@ -35,7 +35,7 @@ const recipeSchema = new Schema({
     instructions: {
         type: String,
         required: [true, "Instructions are required!"],
-        minLength: [50, "Instructions length must be at least fifty characters!"]
+        minLength: [50, "Instructions length must be at least 50 characters!"]
     },
     reviews: {
         type: [ObjectId],
