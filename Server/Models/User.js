@@ -6,7 +6,7 @@ const userSchema = new Schema({
     username: {
         type: String,
         required: [true, "Username is required!"],
-        unique: [true, "Username already exist!"],
+        unique: [true, "Username already exists!"],
         minLength: [3, "Username length must be at least three characters!"],
         maxLength: [20, "Username length must not exceed twenty characters!"],
         match: [/^(?=.{3,20}$)(?![_.])(?!.*[_.]{2})[a-z0-9._]+(?<![_.])$/i, "Username is not valid!\r\nAllowed characters: A to Z, a to z, 0 to 9, _ (except start/end) and . (except start/end)"]
