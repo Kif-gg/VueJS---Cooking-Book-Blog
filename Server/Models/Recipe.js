@@ -18,10 +18,6 @@ const recipeSchema = new Schema({
         type: String,
         required: [true, "Category is required!"]
     },
-    averageRating: {
-        type: Number,
-        default: 0
-    },
     description: {
         type: String,
         required: [true, "Description is required!"],
