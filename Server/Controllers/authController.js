@@ -52,3 +52,25 @@ authController.get("/profile", allowUsersOnly(), async (req, res) => {
         res.status(400).json({ message });
     }
 });
+
+authController.put("/profile", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await getUserById(req.user._id);
+        if (!user) {
+            throw new Error(`User with ID ${req.user._id} does not exist!`);
+        }
+        const fieldsToUpdate = Object.keys(req.body);
+        if (fieldsToUpdate.includes("email")) {
+            const result = await changeEmail(user, req.body);
+            res.status(200).json(result);
+        } else if (fieldsToUpdate.includes("password")) {
+            const result = await changePassword(user, req.body);
+            res.status(200).json(result);
+        } else {
+            throw new Error("Wrong input data!");
+        }
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
