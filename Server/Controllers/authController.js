@@ -1,6 +1,6 @@
 const { register, login, logout, changeEmail, changePassword, deleteUser, getUserById } = require("../Services/userService");
 const { parseError } = require("../Util/errorParser");
-const { allowGuestsOnly, allowUsersOnly, allowAdminsOnly } = require("../Middlewares/guard");
+const { allowGuestsOnly, allowUsersOnly, allowAdminsOnly, allowAnyAuthenticated } = require("../Middlewares/guard");
 
 const authController = require("express").Router();
 
@@ -24,6 +24,18 @@ authController.post("/login", allowGuestsOnly(), async (req, res) => {
     } catch (error) {
         const message = parseError(error);
         res.cookie("AUTHORIZATION", "alabala", { maxAge: 0 });
+        res.status(400).json({ message });
+    }
+});
+
+authController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
+    try {
+        const token = req.token;
+        await logout(token);
+        res.clearCookie("AUTHORIZATION");
+        res.status(204).end();
+    } catch (error) {
+        const message = parseError(error);
         res.status(400).json({ message });
     }
 });
