@@ -110,6 +110,9 @@ async function changeEmail(user, formData) {
         if (!currentEmail.test(formData.oldEmail)) {
             errorStack += "Old email is wrong!";
         }
+        if (currentEmail.test(formData.newEmail)) {
+            errorStack += "New email can't be Your old email!";
+        }
         if (!validateEmail(formData.newEmail)) {
             errorStack += "New email is not valid!";
         }
