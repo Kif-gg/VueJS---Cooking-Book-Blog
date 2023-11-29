@@ -98,3 +98,7 @@ async function login(username, password) {
 
     return createToken(user);
 };
+
+async function logout(token) {
+    await BlacklistedToken.create({ token });
+};
