@@ -39,3 +39,16 @@ authController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
         res.status(400).json({ message });
     }
 });
+
+authController.get("/profile", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await getUserById(req.user._id);
+        if (!user) {
+            throw new Error(`User with ID ${req.user._id} does not exist!`);
+        }
+        res.status(200).json(user);
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
