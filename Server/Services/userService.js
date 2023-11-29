@@ -106,11 +106,10 @@ async function logout(token) {
 async function changeEmail(user, formData) {
     try {
         let errorStack = "";
-        const currentEmail = new RegExp(`^${user.email}`, `i`);
         if (formData.oldEmail.length == 0) {
             errorStack += "Old email is required!\r\n";
         }
-        if (!currentEmail.test(formData.oldEmail)) {
+        if (user.email.toLowerCase() != formData.oldEmail.toLowerCase()) {
             errorStack += "Old email is wrong!\r\n";
         }
         if (formData.newEmail.length == 0) {
