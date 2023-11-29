@@ -9,9 +9,10 @@ const { validateUsername, validateEmail } = require("../Util/inputValidator");
 
 const secret = "i1X1BCKFoVGv7QoQeUqz2AvQV2qJeqqC";
 
-async function register(username, email, password, repass) {
+async function register(formData) {
     try {
         let errorStack = "";
+        const { username, email, password, repass } = formData;
         const existingUsername = await User.findOne({ username }).collation({ locale: "en", strength: 2 });
         const existingEmail = await User.findOne({ email }).collation({ locale: "en", strength: 2 });
 
@@ -95,23 +96,28 @@ async function parseToken(token) {
     };
 };
 
-async function login(username, password) {
-    const user = await User.findOne({ username }).collation({ locale: "en", strength: 2 });
+async function login(formData) {
+    try {
+        const { username, password } = formData;
+        const user = await User.findOne({ username }).collation({ locale: "en", strength: 2 });
 
-    if (!user) {
-        throw new Error("Incorrect username or password!");
+        if (!user) {
+            throw new Error("Incorrect username or password!");
+        }
+
+        if (user.blocked) {
+            throw new Error("This account is blocked! Contact support via email to unblock Your account!");
+        }
+
+        const match = bcrypt.compare(password, user.hashedPassword);
+        if (!match) {
+            throw new Error("Incorrect username or password!");
+        }
+
+        return createToken(user);
+    } catch (error) {
+        throw error;
     }
-
-    if (user.blocked) {
-        throw new Error("This account is blocked! Contact support via email to unblock Your account!");
-    }
-
-    const match = bcrypt.compare(password, user.hashedPassword);
-    if (!match) {
-        throw new Error("Incorrect username or password!");
-    }
-
-    return createToken(user);
 };
 
 async function logout(token) {
