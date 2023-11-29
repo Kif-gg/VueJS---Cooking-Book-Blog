@@ -41,5 +41,6 @@ function allowAnyAuthenticated() {
 module.exports = {
     allowGuestsOnly,
     allowUsersOnly,
-    allowAdminsOnly
+    allowAdminsOnly,
+    allowAnyAuthenticated
 };
