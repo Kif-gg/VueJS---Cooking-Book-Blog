@@ -57,7 +57,7 @@ async function register(formData) {
         const user = await User.create({
             username,
             email,
-            hashedPassword: await bcrypt.hash(password, 15)
+            hashedPassword: await bcrypt.hash(password, 12)
         });
         return createToken(user);
     } catch (error) {
@@ -192,7 +192,7 @@ async function changePassword(user, formData) {
             throw new Error(errorStack);
         }
 
-        user.hashedPassword = await bcrypt.hash(newPassword, 15);
+        user.hashedPassword = await bcrypt.hash(newPassword, 12);
         return user.save();
     } catch (error) {
         throw error;
