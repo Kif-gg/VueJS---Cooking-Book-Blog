@@ -107,17 +107,23 @@ async function changeEmail(user, formData) {
     try {
         let errorStack = "";
         const currentEmail = new RegExp(`^${user.email}`, `i`);
+        if (formData.oldEmail.length == 0) {
+            errorStack += "Old email is required!\r\n";
+        }
         if (!currentEmail.test(formData.oldEmail)) {
-            errorStack += "Old email is wrong!";
+            errorStack += "Old email is wrong!\r\n";
+        }
+        if (formData.newEmail.length == 0) {
+            errorStack += "New email is required!\r\n";
         }
         if (currentEmail.test(formData.newEmail)) {
-            errorStack += "New email can't be Your old email!";
+            errorStack += "New email can't be Your old email!\r\n";
         }
         if (!validateEmail(formData.newEmail)) {
-            errorStack += "New email is not valid!";
+            errorStack += "New email is not valid!\r\n";
         }
         if (formData.newEmail != formData.reEmail) {
-            errorStack += "Repeated email does not match the original!";
+            errorStack += "Repeated email does not match the original!\r\n";
         }
         if (errorStack.length > 0) {
             throw new Error(errorStack);
