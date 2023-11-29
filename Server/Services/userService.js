@@ -174,6 +174,38 @@ async function changePassword(user, formData) {
     }
 };
 
+async function deleteUser(user, formData) {
+    try {
+        let errorStack = "";
+        if (username.length == 0) {
+            errorStack += "Username is required!\r\n";
+        } else if (user.username.toLowerCase() != formData.username.toLowerCase()) {
+            errorStack += "Incorrect username\r\n";
+        }
+        if (formData.email.length == 0) {
+            errorStack += "Email is required!\r\n";
+        } else if (user.email.toLowerCase() != formData.email.toLowerCase()) {
+            errorStack += "Incorrect email!\r\n";
+        }
+        const match = bcrypt.compare(formData.password, user.hashedPassword);
+        if (formData.password.length == 0) {
+            errorStack += "Password is required!\r\n";
+        } else if (!match) {
+            errorStack += "Incorrect password!\r\n";
+        } else if (repass != password) {
+            errorStack += "Repeated password does not match the original!\r\n";
+        }
+
+        if (errorStack.length > 0) {
+            throw new Error(errorStack);
+        }
+
+        return User.findByIdAndDelete(user._id);
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 async function getUserById(id) {
     return User.findById(id);
