@@ -6,7 +6,7 @@ const authController = require("express").Router();
 
 authController.post("/register", allowGuestsOnly(), async (req, res) => {
     try {
-        const token = await register(req.body.username, req.body.email, req.body.password, req.body.repass);
+        const token = await register(req.body);
         res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
         res.json(token);
     } catch (error) {
@@ -18,7 +18,7 @@ authController.post("/register", allowGuestsOnly(), async (req, res) => {
 
 authController.post("/login", allowGuestsOnly(), async (req, res) => {
     try {
-        const token = await login(req.body.username, req.body.password);
+        const token = await login(req.body);
         res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
         res.json(token);
     } catch (error) {
@@ -74,3 +74,18 @@ authController.put("/profile", allowUsersOnly(), async (req, res) => {
         res.status(400).json({ message });
     }
 });
+
+authController.delete("/profile", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await getUserById(req.user._id);
+        if (!user) {
+            throw new Error(`User with ID ${req.user._id} does not exist!`);
+        }
+        await deleteUser(user, req.body)
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
+
+module.exports = authController;
