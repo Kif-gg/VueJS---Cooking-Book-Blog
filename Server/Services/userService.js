@@ -80,6 +80,21 @@ function createToken(user) {
     };
 };
 
+async function parseToken(token) {
+    try {
+        const match = await BlacklistedToken.find({ token: token });
+
+        if (match.length > 0) {
+            throw new Error('Token is in blacklist!')
+        } else {
+            return jwt.verify(token, secret);
+        }
+    } catch (error) {
+        const parsed = parseError(error);
+        throw new Error(parsed);
+    };
+};
+
 async function login(username, password) {
     const user = await User.findOne({ username }).collation({ locale: "en", strength: 2 });
 
