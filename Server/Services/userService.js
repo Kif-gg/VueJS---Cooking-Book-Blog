@@ -22,7 +22,7 @@ async function register(formData) {
         if (existingEmail) {
             errorStack += "Email already registered!\r\n";
         }
-        if (username.length == 0) {
+        if (!username || username.length == 0) {
             errorStack += "Username is required!\r\n";
         } else if (username.length < 3) {
             errorStack += "Username length must be at least 3 characters!\r\n"
@@ -31,24 +31,25 @@ async function register(formData) {
         } else if (!validateUsername(username)) {
             errorStack += "Username is not valid!\r\nAllowed characters: A to Z, a to z, 0 to 9, _ (except start/end) and . (except start/end)\r\n";
         }
-        if (email.length == 0) {
+        if (!email || email.length == 0) {
             errorStack += "Email is required!\r\n";
         } else if (!validateEmail(email)) {
             errorStack += "Email is not valid!\r\n"
         }
-        if (password.includes(" ")) {
-            errorStack += "Password must not contain whitespaces!\r\n";
-        }
-        if (password.length == 0) {
+        if (!password || password.length == 0) {
             errorStack += "Password is required!\r\n";
         } else if (password.length < 6) {
             errorStack += "Password length must be at least 6 characters!\r\n";
         } else if (password.length > 256) {
             errorStack += "Password length must not exceed 256 characters!\r\n"
-        } else if (repass != password) {
-            errorStack += "Repeated password does not match the original!\r\n"
+        } else {
+            if (password.includes(" ")) {
+                errorStack += "Password must not contain whitespaces!\r\n";
+            }
+            if (!repass && repass != password) {
+                errorStack += "Repeated password does not match the original!\r\n"
+            }
         }
-
         if (errorStack.length > 0) {
             throw new Error(errorStack);
         }
@@ -128,22 +129,22 @@ async function changeEmail(user, formData) {
     try {
         const { oldEmail, newEmail, reEmail } = formData;
         let errorStack = "";
-        if (oldEmail.length == 0) {
+        if (!oldEmail || oldEmail.length == 0) {
             errorStack += "Old email is required!\r\n";
         }
         if (user.email.toLowerCase() != oldEmail.toLowerCase()) {
             errorStack += "Old email is wrong!\r\n";
         }
-        if (newEmail.length == 0) {
+        if (!newEmail || newEmail.length == 0) {
             errorStack += "New email is required!\r\n";
         }
-        if (currentEmail.test(newEmail)) {
+        if (user.email.toLowerCase() == newEmail.toLowerCase()) {
             errorStack += "New email can't be Your old email!\r\n";
         }
         if (!validateEmail(newEmail)) {
             errorStack += "New email is not valid!\r\n";
         }
-        if (newEmail != reEmail) {
+        if (!reEmail && newEmail != reEmail) {
             errorStack += "Repeated email does not match the original!\r\n";
         }
         if (errorStack.length > 0) {
@@ -162,28 +163,29 @@ async function changePassword(user, formData) {
     try {
         const { oldPassword, newPassword, repass } = formData;
         let errorStack = "";
-        if (oldPassword.length == 0) {
+        if (!oldPassword || oldPassword.length == 0) {
             errorStack += "Old password is required!\r\n";
         }
         const match = await bcrypt.compare(oldPassword, user.hashedPassword);
         if (!match) {
             errorStack += "Old password is wrong!\r\n";
         }
-        if (newPassword.includes(" ")) {
-            errorStack += "Password must not contain whitespaces!\r\n";
-        }
-        if (newPassword.length == 0) {
+        if (!newPassword || newPassword.length == 0) {
             errorStack += "New password is required!\r\n";
         } else if (newPassword.length < 6) {
             errorStack += "New password length must be at least 6 characters!\r\n";
         } else if (newPassword.length > 256) {
             errorStack += "New password length must not exceed 256 characters!\r\n";
-        }
-        if (oldPassword == newPassword) {
-            errorStack += "New password can't be Your old password!\r\n";
-        }
-        if (newPassword != repass) {
-            errorStack += "Repeated password does not match the original!\r\n";
+        } else {
+            if (newPassword.includes(" ")) {
+                errorStack += "Password must not contain whitespaces!\r\n";
+            }
+            if (oldPassword == newPassword) {
+                errorStack += "New password can't be Your old password!\r\n";
+            }
+            if (!repass && newPassword != repass) {
+                errorStack += "Repeated password does not match the original!\r\n";
+            }
         }
 
         if (errorStack.length > 0) {
@@ -201,22 +203,22 @@ async function deleteUser(user, formData) {
     try {
         const { username, email, password, repass } = formData;
         let errorStack = "";
-        if (username.length == 0) {
+        if (!username || username.length == 0) {
             errorStack += "Username is required!\r\n";
         } else if (user.username.toLowerCase() != username.toLowerCase()) {
             errorStack += "Incorrect username\r\n";
         }
-        if (email.length == 0) {
+        if (!email || email.length == 0) {
             errorStack += "Email is required!\r\n";
         } else if (user.email.toLowerCase() != email.toLowerCase()) {
             errorStack += "Incorrect email!\r\n";
         }
         const match = bcrypt.compare(password, user.hashedPassword);
-        if (password.length == 0) {
+        if (!password || password.length == 0) {
             errorStack += "Password is required!\r\n";
         } else if (!match) {
             errorStack += "Incorrect password!\r\n";
-        } else if (repass != password) {
+        } else if (!repass && repass != password) {
             errorStack += "Repeated password does not match the original!\r\n";
         }
 
