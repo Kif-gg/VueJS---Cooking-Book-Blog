@@ -28,6 +28,16 @@ function allowAdminsOnly() {
     }
 };
 
+function allowAnyAuthenticated() {
+    return (req, res, next) => {
+        if (req.user) {
+            next();
+        } else {
+            res.status(400).json({ message: "Login is required!" });
+        }
+    }
+};
+
 module.exports = {
     allowGuestsOnly,
     allowUsersOnly,
