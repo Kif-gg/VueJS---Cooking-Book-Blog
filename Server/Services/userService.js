@@ -102,3 +102,31 @@ async function login(username, password) {
 async function logout(token) {
     await BlacklistedToken.create({ token });
 };
+
+async function changeEmail(user, formData) {
+    try {
+        let errorStack = "";
+        const currentEmail = new RegExp(`^${user.email}`, `i`);
+        if (!currentEmail.test(formData.oldEmail)) {
+            errorStack += "Old email is wrong!";
+        }
+        if (!validateEmail(formData.newEmail)) {
+            errorStack += "New email is not valid!";
+        }
+        if (formData.newEmail != formData.reEmail) {
+            errorStack += "Repeated email does not match the original!";
+        }
+        if (errorStack.length > 0) {
+            throw new Error(errorStack);
+        }
+
+        user.email = formData.newEmail;
+        return user.save();
+    } catch (error) {
+        throw error;
+    }
+};
+
+async function getUserById(id) {
+    return User.findById(id);
+};
