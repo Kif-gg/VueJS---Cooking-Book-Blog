@@ -54,7 +54,7 @@ async function register(formData) {
             throw new Error(errorStack);
         }
 
-        const user = User.create({
+        const user = await User.create({
             username,
             email,
             hashedPassword: await bcrypt.hash(password, 15)
