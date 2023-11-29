@@ -225,3 +225,15 @@ async function deleteUser(user, formData) {
 async function getUserById(id) {
     return User.findById(id);
 };
+
+module.exports = {
+    register,
+    login,
+    createToken,
+    parseToken,
+    logout,
+    changeEmail,
+    changePassword,
+    deleteUser,
+    getUserById
+};
