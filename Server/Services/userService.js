@@ -135,6 +135,43 @@ async function changeEmail(user, formData) {
     }
 };
 
+
+async function changePassword(user, formData) {
+    try {
+        let errorStack = "";
+        if (formData.oldPassword.length == 0) {
+            errorStack += "Old password is required!\r\n";
+        }
+        const match = await bcrypt.compare(formData.oldPassword, user.hashedPassword);
+        if (!match) {
+            errorStack += "Old password is wrong!\r\n";
+        }
+        if (formData.newPassword.length == 0) {
+            errorStack += "New password is required!\r\n";
+        } else if (formData.newPassword.length < 6) {
+            errorStack += "New password length must be at least 6 characters!\r\n";
+        } else if (formData.newPassword.length > 256) {
+            errorStack += "New password length must not exceed 256 characters!\r\n";
+        }
+        if (formData.oldPassword == formData.newPassword) {
+            errorStack += "New password can't be Your old password!\r\n";
+        }
+        if (formData.newPassword != formData.repass) {
+            errorStack += "Repeated password does not match the original!\r\n";
+        }
+
+        if (errorStack.length > 0) {
+            throw new Error(errorStack);
+        }
+
+        user.hashedPassword = await bcrypt.hash(formData.newPassword, 15);
+        return user.save();
+    } catch (error) {
+        throw error;
+    }
+};
+
+
 async function getUserById(id) {
     return User.findById(id);
 };
