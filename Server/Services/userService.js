@@ -46,7 +46,7 @@ async function register(formData) {
             if (password.includes(" ")) {
                 errorStack += "Password must not contain whitespaces!\r\n";
             }
-            if (!repass && repass != password) {
+            if (!repass || repass != password) {
                 errorStack += "Repeated password does not match the original!\r\n"
             }
         }
@@ -144,7 +144,7 @@ async function changeEmail(user, formData) {
         if (!validateEmail(newEmail)) {
             errorStack += "New email is not valid!\r\n";
         }
-        if (!reEmail && newEmail != reEmail) {
+        if (!reEmail || newEmail != reEmail) {
             errorStack += "Repeated email does not match the original!\r\n";
         }
         if (errorStack.length > 0) {
@@ -183,7 +183,7 @@ async function changePassword(user, formData) {
             if (oldPassword == newPassword) {
                 errorStack += "New password can't be Your old password!\r\n";
             }
-            if (!repass && newPassword != repass) {
+            if (!repass || newPassword != repass) {
                 errorStack += "Repeated password does not match the original!\r\n";
             }
         }
@@ -218,7 +218,7 @@ async function deleteUser(user, formData) {
             errorStack += "Password is required!\r\n";
         } else if (!match) {
             errorStack += "Incorrect password!\r\n";
-        } else if (!repass && repass != password) {
+        } else if (!repass || repass != password) {
             errorStack += "Repeated password does not match the original!\r\n";
         }
 
