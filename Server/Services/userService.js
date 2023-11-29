@@ -50,18 +50,18 @@ async function register(username, email, password, repass) {
 
         if (errorStack.length > 0) {
             throw new Error(errorStack);
-        } else {
-            const user = User.create({
-                username,
-                email,
-                hashedPassword: await bcrypt.hash(password, 15)
-            });
-            return createToken(user);
         }
+
+        const user = User.create({
+            username,
+            email,
+            hashedPassword: await bcrypt.hash(password, 15)
+        });
+        return createToken(user);
     } catch (error) {
         throw error;
     }
-}
+};
 
 function createToken(user) {
     const payload = {
@@ -78,4 +78,23 @@ function createToken(user) {
         email: user.email,
         accessToken: token
     };
+};
+
+async function login(username, password) {
+    const user = await User.findOne({ username }).collation({ locale: "en", strength: 2 });
+
+    if (!user) {
+        throw new Error("Incorrect username or password!");
+    }
+
+    if (user.blocked) {
+        throw new Error("This account is blocked! Contact support via email to unblock Your account!");
+    }
+
+    const match = bcrypt.compare(password, user.hashedPassword);
+    if (!match) {
+        throw new Error("Incorrect username or password!");
+    }
+
+    return createToken(user);
 };
