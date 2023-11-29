@@ -126,30 +126,31 @@ async function logout(token) {
 
 async function changeEmail(user, formData) {
     try {
+        const { oldEmail, newEmail, reEmail } = formData;
         let errorStack = "";
-        if (formData.oldEmail.length == 0) {
+        if (oldEmail.length == 0) {
             errorStack += "Old email is required!\r\n";
         }
-        if (user.email.toLowerCase() != formData.oldEmail.toLowerCase()) {
+        if (user.email.toLowerCase() != oldEmail.toLowerCase()) {
             errorStack += "Old email is wrong!\r\n";
         }
-        if (formData.newEmail.length == 0) {
+        if (newEmail.length == 0) {
             errorStack += "New email is required!\r\n";
         }
-        if (currentEmail.test(formData.newEmail)) {
+        if (currentEmail.test(newEmail)) {
             errorStack += "New email can't be Your old email!\r\n";
         }
-        if (!validateEmail(formData.newEmail)) {
+        if (!validateEmail(newEmail)) {
             errorStack += "New email is not valid!\r\n";
         }
-        if (formData.newEmail != formData.reEmail) {
+        if (newEmail != reEmail) {
             errorStack += "Repeated email does not match the original!\r\n";
         }
         if (errorStack.length > 0) {
             throw new Error(errorStack);
         }
 
-        user.email = formData.newEmail;
+        user.email = newEmail;
         return user.save();
     } catch (error) {
         throw error;
@@ -159,28 +160,29 @@ async function changeEmail(user, formData) {
 
 async function changePassword(user, formData) {
     try {
+        const { oldPassword, newPassword, repass } = formData;
         let errorStack = "";
-        if (formData.oldPassword.length == 0) {
+        if (oldPassword.length == 0) {
             errorStack += "Old password is required!\r\n";
         }
-        const match = await bcrypt.compare(formData.oldPassword, user.hashedPassword);
+        const match = await bcrypt.compare(oldPassword, user.hashedPassword);
         if (!match) {
             errorStack += "Old password is wrong!\r\n";
         }
-        if (formData.newPassword.includes(" ")) {
+        if (newPassword.includes(" ")) {
             errorStack += "Password must not contain whitespaces!\r\n";
         }
-        if (formData.newPassword.length == 0) {
+        if (newPassword.length == 0) {
             errorStack += "New password is required!\r\n";
-        } else if (formData.newPassword.length < 6) {
+        } else if (newPassword.length < 6) {
             errorStack += "New password length must be at least 6 characters!\r\n";
-        } else if (formData.newPassword.length > 256) {
+        } else if (newPassword.length > 256) {
             errorStack += "New password length must not exceed 256 characters!\r\n";
         }
-        if (formData.oldPassword == formData.newPassword) {
+        if (oldPassword == newPassword) {
             errorStack += "New password can't be Your old password!\r\n";
         }
-        if (formData.newPassword != formData.repass) {
+        if (newPassword != repass) {
             errorStack += "Repeated password does not match the original!\r\n";
         }
 
@@ -188,7 +190,7 @@ async function changePassword(user, formData) {
             throw new Error(errorStack);
         }
 
-        user.hashedPassword = await bcrypt.hash(formData.newPassword, 15);
+        user.hashedPassword = await bcrypt.hash(newPassword, 15);
         return user.save();
     } catch (error) {
         throw error;
@@ -197,19 +199,20 @@ async function changePassword(user, formData) {
 
 async function deleteUser(user, formData) {
     try {
+        const { username, email, password, repass } = formData;
         let errorStack = "";
         if (username.length == 0) {
             errorStack += "Username is required!\r\n";
-        } else if (user.username.toLowerCase() != formData.username.toLowerCase()) {
+        } else if (user.username.toLowerCase() != username.toLowerCase()) {
             errorStack += "Incorrect username\r\n";
         }
-        if (formData.email.length == 0) {
+        if (email.length == 0) {
             errorStack += "Email is required!\r\n";
-        } else if (user.email.toLowerCase() != formData.email.toLowerCase()) {
+        } else if (user.email.toLowerCase() != email.toLowerCase()) {
             errorStack += "Incorrect email!\r\n";
         }
-        const match = bcrypt.compare(formData.password, user.hashedPassword);
-        if (formData.password.length == 0) {
+        const match = bcrypt.compare(password, user.hashedPassword);
+        if (password.length == 0) {
             errorStack += "Password is required!\r\n";
         } else if (!match) {
             errorStack += "Incorrect password!\r\n";
