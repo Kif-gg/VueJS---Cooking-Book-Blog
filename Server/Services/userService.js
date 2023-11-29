@@ -146,6 +146,9 @@ async function changePassword(user, formData) {
         if (!match) {
             errorStack += "Old password is wrong!\r\n";
         }
+        if (formData.newPassword.includes(" ")) {
+            errorStack += "Password must not contain whitespaces!\r\n";
+        }
         if (formData.newPassword.length == 0) {
             errorStack += "New password is required!\r\n";
         } else if (formData.newPassword.length < 6) {
