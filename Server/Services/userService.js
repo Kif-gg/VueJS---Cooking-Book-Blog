@@ -28,12 +28,12 @@ async function register(formData) {
         } else if (!validateUsername(username)) {
             errorStack += "Username is not valid!\r\nAllowed characters: A to Z, a to z, 0 to 9, _ (except start/end) and . (except start/end)\r\n";
         }
-        if (!email || email.length == 0) {
+        if (!email) {
             errorStack += "Email is required!\r\n";
         } else if (!validateEmail(email)) {
             errorStack += "Email is not valid!\r\n"
         }
-        if (!password || password.length == 0) {
+        if (!password) {
             errorStack += "Password is required!\r\n";
         } else if (password.length < 6) {
             errorStack += "Password length must be at least 6 characters!\r\n";
@@ -94,13 +94,13 @@ async function changeEmail(user, formData) {
     try {
         const { oldEmail, newEmail, reEmail } = formData;
         let errorStack = "";
-        if (!oldEmail || oldEmail.length == 0) {
+        if (!oldEmail) {
             errorStack += "Old email is required!\r\n";
         }
         if (user.email.toLowerCase() != oldEmail.toLowerCase()) {
             errorStack += "Old email is wrong!\r\n";
         }
-        if (!newEmail || newEmail.length == 0) {
+        if (!newEmail) {
             errorStack += "New email is required!\r\n";
         }
         if (user.email.toLowerCase() == newEmail.toLowerCase()) {
@@ -128,14 +128,14 @@ async function changePassword(user, formData) {
     try {
         const { oldPassword, newPassword, repass } = formData;
         let errorStack = "";
-        if (!oldPassword || oldPassword.length == 0) {
+        if (!oldPassword) {
             errorStack += "Old password is required!\r\n";
         }
         const match = await bcrypt.compare(oldPassword, user.hashedPassword);
         if (!match) {
             errorStack += "Old password is wrong!\r\n";
         }
-        if (!newPassword || newPassword.length == 0) {
+        if (!newPassword) {
             errorStack += "New password is required!\r\n";
         } else if (newPassword.length < 6) {
             errorStack += "New password length must be at least 6 characters!\r\n";
@@ -168,18 +168,18 @@ async function deleteUser(user, formData) {
     try {
         const { username, email, password, repass } = formData;
         let errorStack = "";
-        if (!username || username.length == 0) {
+        if (!username) {
             errorStack += "Username is required!\r\n";
         } else if (user.username.toLowerCase() != username.toLowerCase()) {
             errorStack += "Incorrect username\r\n";
         }
-        if (!email || email.length == 0) {
+        if (!email) {
             errorStack += "Email is required!\r\n";
         } else if (user.email.toLowerCase() != email.toLowerCase()) {
             errorStack += "Incorrect email!\r\n";
         }
         const match = bcrypt.compare(password, user.hashedPassword);
-        if (!password || password.length == 0) {
+        if (!password) {
             errorStack += "Password is required!\r\n";
         } else if (!match) {
             errorStack += "Incorrect password!\r\n";
