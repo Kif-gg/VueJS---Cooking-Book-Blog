@@ -1,4 +1,4 @@
-const { parseToken } = require('../Services/userService');
+const { parseToken } = require('../Util/tokenManager');
 
 module.exports = () => async (req, res, next) => {
     const token = req.cookies['Authorization'];
