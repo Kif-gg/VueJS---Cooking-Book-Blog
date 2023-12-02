@@ -11,32 +11,28 @@ async function getAllRecipes() {
 };
 
 async function getRecipesFiltered(formData) {
-    try {
-        let { search, category, criteria, direction } = formData;
-        if (!search) {
-            search = "";
-        }
-        if (!category || category.toLowerCase() == "all") {
-            category = ""
-        }
-        if (!criteria || (criteria.toLowerCase() != "name" && criteria.toLowerCase() != "rating")) {
-            criteria = "name";
-        }
-        if (direction.toLowerCase() != "descending") {
-            direction = "ascending";
-        }
-
-        const searchMatch = new RegExp(createRegExp(search), "is");
-        const categoryMatch = new RegExp(category, "i");
-
-        return Recipe
-            .find({ category: categoryMatch })
-            .or([{ "name": searchMatch }, { "description": searchMatch }, { "productsNeeded": searchMatch }, { "instructions": searchMatch }])
-            .sort({ [criteria]: direction })
-            .populate("reviews");
-    } catch (error) {
-        throw error;
+    let { search, category, criteria, direction } = formData;
+    if (!search) {
+        search = "";
     }
+    if (!category || category.toLowerCase() == "all") {
+        category = ""
+    }
+    if (!criteria || (criteria.toLowerCase() != "name" && criteria.toLowerCase() != "rating")) {
+        criteria = "name";
+    }
+    if (direction.toLowerCase() != "descending") {
+        direction = "ascending";
+    }
+
+    const searchMatch = new RegExp(createRegExp(search), "is");
+    const categoryMatch = new RegExp(category, "i");
+
+    return Recipe
+        .find({ category: categoryMatch })
+        .or([{ "name": searchMatch }, { "description": searchMatch }, { "productsNeeded": searchMatch }, { "instructions": searchMatch }])
+        .sort({ [criteria]: direction })
+        .populate("reviews");
 };
 
 async function getRecipeById(id) {
