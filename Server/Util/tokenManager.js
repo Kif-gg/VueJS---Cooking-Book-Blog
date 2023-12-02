@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
-
 const BlacklistedToken = require("../Models/BlacklistedToken");
-const { parseError } = require("../Util/errorParser");
 
 const secret = "i1X1BCKFoVGv7QoQeUqz2AvQV2qJeqqC";
 
@@ -23,18 +21,12 @@ function createToken(user) {
 };
 
 async function parseToken(token) {
-    try {
-        const match = await BlacklistedToken.find({ token: token });
+    const match = await BlacklistedToken.find({ token: token });
 
-        if (match.length > 0) {
-            throw new Error('Token is in blacklist!')
-        } else {
-            return jwt.verify(token, secret);
-        }
-    } catch (error) {
-        const parsed = parseError(error);
-        throw new Error(parsed);
-    };
+    if (match.length > 0) {
+        throw new Error('Token is in blacklist!');
+    }
+    return jwt.verify(token, secret);
 };
 
 module.exports = {
