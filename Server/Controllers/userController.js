@@ -7,8 +7,11 @@ const userController = require("express").Router();
 userController.post("/register", allowGuestsOnly(), async (req, res) => {
     try {
         const token = await register(req.body);
+        const DASHBOARD = req.app.locals.DASHBOARD;
+        DASHBOARD.usersDashboard.totalRegistered.unshift(new Date(Date.now()));
+        await DASHBOARD.save();
         res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
-        res.json(token);
+        res.status(201).json(token);
     } catch (error) {
         const message = parseError(error);
         res.cookie("AUTHORIZATION", "alabala", { maxAge: 0 });
@@ -43,10 +46,7 @@ userController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
 userController.get("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
-        if (!user) {
-            throw new Error(`User with ID ${req.user._id} does not exist!`);
-        }
-        res.status(200).json(user);
+        res.json(user);
     } catch (error) {
         const message = parseError(error);
         res.status(400).json({ message });
@@ -55,20 +55,17 @@ userController.get("/profile", allowUsersOnly(), async (req, res) => {
 
 userController.put("/profile", allowUsersOnly(), async (req, res) => {
     try {
-        const user = await getUserById(req.user._id);
-        if (!user) {
-            throw new Error(`User with ID ${req.user._id} does not exist!`);
-        }
         const fieldsToUpdate = Object.keys(req.body);
-        if (fieldsToUpdate.includes("email")) {
-            const result = await changeEmail(user, req.body);
-            res.status(200).json(result);
-        } else if (fieldsToUpdate.includes("password")) {
-            const result = await changePassword(user, req.body);
-            res.status(200).json(result);
+        const user = await getUserById(req.user._id);
+        let result;
+        if (fieldsToUpdate.includes("oldEmail") && fieldsToUpdate.includes("newEmail") && fieldsToUpdate.includes("reEmail")) {
+            result = await changeEmail(user, req.body);
+        } else if (fieldsToUpdate.includes("oldPassword") && fieldsToUpdate.includes("newPassword") && fieldsToUpdate.includes("repass")) {
+            result = await changePassword(user, req.body);
         } else {
             throw new Error("Wrong input data!");
         }
+        res.json(result);
     } catch (error) {
         const message = parseError(error);
         res.status(400).json({ message });
@@ -78,10 +75,11 @@ userController.put("/profile", allowUsersOnly(), async (req, res) => {
 userController.delete("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
-        if (!user) {
-            throw new Error(`User with ID ${req.user._id} does not exist!`);
-        }
-        await deleteUser(user, req.body)
+        await deleteUser(user, req.body);
+        const DASHBOARD = req.app.locals.DASHBOARD;
+        DASHBOARD.usersDashboard.totalDeleted.unshift(new Date(Date.now()));
+        await DASHBOARD.save();
+        res.status(204).end();
     } catch (error) {
         const message = parseError(error);
         res.status(400).json({ message });
