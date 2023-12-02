@@ -1,11 +1,14 @@
 const Admin = require("../Models/Admin");
 const BlacklistedToken = require("../Models/BlacklistedToken");
 const Recipe = require("../Models/Recipe");
+const User = require("../Models/User");
 
 const bcrypt = require("bcrypt");
 
 const { createToken } = require("../Util/tokenManager");
 const { validateImgUrl } = require("../Util/inputValidator");
+const { getSingleInstance } = require("../Models/Dashboard");
+const { getTodaysRecords, getThisWeeksRecords } = require("../Util/dateFilter");
 
 async function login(formData) {
     try {
@@ -31,6 +34,70 @@ async function login(formData) {
 
 async function logout(token) {
     await BlacklistedToken.create({ token });
+};
+
+async function getDashboard() {
+    const { usersDashboard, recipesDashboard, reviewsDashboard } = await getSingleInstance();
+
+    const usersCurrently = usersDashboard.totalRegistered.length - usersDashboard.totalDeleted.length;
+    const usersRegisteredToday = getTodaysRecords(usersDashboard.totalRegistered).length;
+    const usersRegisteredThisWeek = getThisWeeksRecords(usersDashboard.totalRegistered).length;
+    const usersRegisteredOverall = usersDashboard.totalRegistered.length;
+
+    const usersDeletedToday = getTodaysRecords(usersDashboard.totalDeleted).length;
+    const usersDeletedThisWeek = getThisWeeksRecords(usersDashboard.totalDeleted).length;;
+    const usersDeletedOverall = usersDashboard.totalDeleted.length;
+
+    const recipesCurrently = recipesDashboard.totalCreated.length - recipesDashboard.totalDeleted.length;
+    const recipesCreatedToday = getTodaysRecords(recipesDashboard.totalCreated).length;
+    const recipesCreatedThisWeek = getThisWeeksRecords(recipesDashboard.totalCreated).length;
+    const recipesCreatedOverall = recipesDashboard.totalCreated.length;
+
+    const recipesDeletedToday = getTodaysRecords(recipesDashboard.totalDeleted).length;
+    const recipesDeletedThisWeek = getThisWeeksRecords(recipesDashboard.totalDeleted).length;
+    const recipesDeletedOverall = recipesDashboard.totalDeleted.length;
+
+    const reviewsCurrently = reviewsDashboard.totalPosted.length - reviewsDashboard.totalDeleted.length;
+    const reviewsPostedToday = getTodaysRecords(reviewsDashboard.totalPosted).length;
+    const reviewsPostedThisWeek = getThisWeeksRecords(reviewsDashboard.totalPosted).length;
+    const reviewsPostedOverall = reviewsDashboard.totalPosted.length;
+
+    const reviewsDeletedToday = getTodaysRecords(reviewsDashboard.totalDeleted).length;
+    const reviewsDeletedThisWeek = getThisWeeksRecords(reviewsDashboard.totalDeleted).length;
+    const reviewsDeletedOverall = reviewsDashboard.totalDeleted.length;
+
+    return {
+        usersDashboard: {
+            usersCurrently,
+            usersRegisteredToday,
+            usersRegisteredThisWeek,
+            usersRegisteredOverall,
+
+            usersDeletedToday,
+            usersDeletedThisWeek,
+            usersDeletedOverall
+        },
+        recipesDashboard: {
+            recipesCurrently,
+            recipesCreatedToday,
+            recipesCreatedThisWeek,
+            recipesCreatedOverall,
+
+            recipesDeletedToday,
+            recipesDeletedThisWeek,
+            recipesDeletedOverall
+        },
+        reviewsDashboard: {
+            reviewsCurrently,
+            reviewsPostedToday,
+            reviewsPostedThisWeek,
+            reviewsPostedOverall,
+
+            reviewsDeletedToday,
+            reviewsDeletedThisWeek,
+            reviewsDeletedOverall
+        }
+    };
 };
 
 async function createRecipe(formData) {
@@ -72,6 +139,9 @@ async function createRecipe(formData) {
             throw new Error(errorStack);
         }
 
+        const DASHBOARD = await getSingleInstance();
+        DASHBOARD.recipesDashboard.totalCreated.push(new Date(Date.now()));
+        DASHBOARD.save();
         return Recipe.create({
             imgUrl,
             name,
@@ -148,5 +218,32 @@ async function editRecipe(recipe, formData) {
 };
 
 async function deleteRecipe(recipe) {
+    const DASHBOARD = await getSingleInstance();
+    DASHBOARD.recipesDashboard.totalDeleted.push(new Date(Date.now()));
+    DASHBOARD.save();
     return Recipe.findByIdAndDelete(recipe._id);
+};
+
+async function editUser(user, formData) {
+    const { checkboxChecked } = formData;
+    user.blocked = checkboxChecked;
+    return user.save();
+};
+
+async function deleteUser(user) {
+    const DASHBOARD = await getSingleInstance();
+    DASHBOARD.usersDashboard.totalDeleted.push(new Date(Date.now()));
+    DASHBOARD.save();
+    return User.findByIdAndDelete(user._id);
+};
+
+module.exports = {
+    login,
+    logout,
+    getDashboard,
+    createRecipe,
+    editRecipe,
+    deleteRecipe,
+    editUser,
+    deleteUser
 };
