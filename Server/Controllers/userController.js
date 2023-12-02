@@ -1,10 +1,10 @@
 const { register, login, logout, changeEmail, changePassword, deleteUser, getUserById } = require("../Services/userService");
 const { parseError } = require("../Util/errorParser");
-const { allowGuestsOnly, allowUsersOnly, allowAdminsOnly, allowAnyAuthenticated } = require("../Middlewares/guard");
+const { allowGuestsOnly, allowUsersOnly, allowAnyAuthenticated } = require("../Middlewares/guard");
 
-const authController = require("express").Router();
+const userController = require("express").Router();
 
-authController.post("/register", allowGuestsOnly(), async (req, res) => {
+userController.post("/register", allowGuestsOnly(), async (req, res) => {
     try {
         const token = await register(req.body);
         res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
@@ -16,7 +16,7 @@ authController.post("/register", allowGuestsOnly(), async (req, res) => {
     }
 });
 
-authController.post("/login", allowGuestsOnly(), async (req, res) => {
+userController.post("/login", allowGuestsOnly(), async (req, res) => {
     try {
         const token = await login(req.body);
         res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
@@ -28,7 +28,7 @@ authController.post("/login", allowGuestsOnly(), async (req, res) => {
     }
 });
 
-authController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
+userController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
     try {
         const token = req.token;
         await logout(token);
@@ -40,7 +40,7 @@ authController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
     }
 });
 
-authController.get("/profile", allowUsersOnly(), async (req, res) => {
+userController.get("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
         if (!user) {
@@ -53,7 +53,7 @@ authController.get("/profile", allowUsersOnly(), async (req, res) => {
     }
 });
 
-authController.put("/profile", allowUsersOnly(), async (req, res) => {
+userController.put("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
         if (!user) {
@@ -75,7 +75,7 @@ authController.put("/profile", allowUsersOnly(), async (req, res) => {
     }
 });
 
-authController.delete("/profile", allowUsersOnly(), async (req, res) => {
+userController.delete("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
         if (!user) {
@@ -88,4 +88,4 @@ authController.delete("/profile", allowUsersOnly(), async (req, res) => {
     }
 });
 
-module.exports = authController;
+module.exports = userController;
