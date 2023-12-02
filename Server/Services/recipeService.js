@@ -1,3 +1,4 @@
+const { isValidObjectId } = require("mongoose");
 const Recipe = require("../Models/Recipe");
 const { createRegExp } = require("../Util/regexGenerator");
 
@@ -21,7 +22,7 @@ async function getRecipesFiltered(formData) {
     if (!criteria || (criteria.toLowerCase() != "name" && criteria.toLowerCase() != "rating")) {
         criteria = "name";
     }
-    if (direction.toLowerCase() != "descending") {
+    if (!direction || direction.toLowerCase() != "descending") {
         direction = "ascending";
     }
 
@@ -36,12 +37,39 @@ async function getRecipesFiltered(formData) {
 };
 
 async function getRecipeById(id) {
-    return Recipe.findById(id).populate("reviews");
+    if (!isValidObjectId(req.params.id)) {
+        throw new Error("Invalid recipe ID!");
+    }
+    const recipe = await Recipe.findById(id).populate("reviews");
+    if (!recipe) {
+        throw new Error(`Recipe with ID ${id} does not exist!`);
+    }
+    return recipe;
 };
+
+async function addRecipeToFavorites(user, recipe) {
+    const hasInFavorites = user.favorites.find(favorite => favorite._id == recipe._id);
+    if (hasInFavorites) {
+        throw new Error("You already added this recipe to Your favorites!");
+    }
+    user.favorites.unshift(recipe);
+    return user.save();
+}
+
+async function removeRecipeFromFavorites(user, recipe) {
+    const hasInFavorites = user.favorites.find(favorite => favorite._id == recipe._id);
+    if (!hasInFavorites) {
+        throw new Error("You haven't added this recipe to Your favorites!");
+    }
+    user.favorites.splice(user.favorites.findIndex(recipe._id), 1);
+    return user.save();
+}
 
 module.exports = {
     getThreeRandomRecipes,
     getAllRecipes,
     getRecipesFiltered,
-    getRecipeById
+    getRecipeById,
+    addRecipeToFavorites,
+    removeRecipeFromFavorites
 };
