@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 
 const { validateUsername, validateEmail } = require("../Util/inputValidator");
 const { createToken } = require("../Util/tokenManager");
+const { getSingleInstance } = require("../Models/Dashboard");
 
 async function register(formData) {
     try {
@@ -56,6 +57,11 @@ async function register(formData) {
             email,
             hashedPassword: await bcrypt.hash(password, 12)
         });
+
+        const DASHBOARD = await getSingleInstance();
+        console.log(DASHBOARD + "From uSer");
+        DASHBOARD.usersDashboard.totalRegistered.push(new Date(Date.now()));
+        DASHBOARD.save();
         return createToken(user);
     } catch (error) {
         throw error;
@@ -191,6 +197,9 @@ async function deleteUser(user, formData) {
             throw new Error(errorStack);
         }
 
+        const DASHBOARD = await getSingleInstance();
+        DASHBOARD.usersDashboard.totalDeleted.push(new Date(Date.now()));
+        DASHBOARD.save();
         return User.findByIdAndDelete(user._id);
     } catch (error) {
         throw error;
