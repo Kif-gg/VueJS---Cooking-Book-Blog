@@ -14,8 +14,8 @@ const reviewSchema = new Schema({
     comment: {
         type: String,
         required: [true, "Comment is required before posting review!"],
-        minLength: [3, "Comment's length must be at least 3 characters!"],
-        maxLength: [300, "Comment's length must not exceed 300 characters!"]
+        minLength: [3, "Comment length must be at least 3 characters!"],
+        maxLength: [300, "Comment length must not exceed 300 characters!"]
     }
 }, { timestamps: { createdAt: "createdAt" } })
 
