@@ -1,11 +1,9 @@
+const { isValidObjectId } = require("mongoose");
 const User = require("../Models/User");
 const BlacklistedToken = require("../Models/BlacklistedToken");
-
 const bcrypt = require("bcrypt");
-
 const { validateUsername, validateEmail } = require("../Util/inputValidator");
 const { createToken } = require("../Util/tokenManager");
-const { getSingleInstance } = require("../Models/Dashboard");
 
 async function register(formData) {
     let errorStack = "";
@@ -19,7 +17,7 @@ async function register(formData) {
     if (existingEmail) {
         errorStack += "Email already registered!\r\n";
     }
-    if (!username || username.length == 0) {
+    if (!username) {
         errorStack += "Username is required!\r\n";
     } else if (username.length < 3) {
         errorStack += "Username length must be at least 3 characters!\r\n"
@@ -57,15 +55,14 @@ async function register(formData) {
         hashedPassword: await bcrypt.hash(password, 12)
     });
 
-    const DASHBOARD = await getSingleInstance();
-    console.log(DASHBOARD + "From uSer");
-    DASHBOARD.usersDashboard.totalRegistered.push(new Date(Date.now()));
-    DASHBOARD.save();
     return createToken(user);
 };
 
 async function login(formData) {
     const { username, password } = formData;
+    if (!username || !password) {
+        throw new Error("Incorrect username or password!");
+    }
     const user = await User.findOne({ username }).collation({ locale: "en", strength: 2 });
 
     if (!user) {
@@ -76,7 +73,7 @@ async function login(formData) {
         throw new Error("This account is blocked! Contact support via email to unblock Your account!");
     }
 
-    const match = bcrypt.compare(password, user.hashedPassword);
+    const match = await bcrypt.compare(password, user.hashedPassword);
     if (!match) {
         throw new Error("Incorrect username or password!");
     }
@@ -138,7 +135,7 @@ async function changePassword(user, formData) {
         if (newPassword.includes(" ")) {
             errorStack += "Password must not contain whitespaces!\r\n";
         }
-        if (oldPassword == newPassword) {
+        if (match && oldPassword == newPassword) {
             errorStack += "New password can't be Your old password!\r\n";
         }
         if (!repass || newPassword != repass) {
@@ -180,15 +177,19 @@ async function deleteUser(user, formData) {
         throw new Error(errorStack);
     }
 
-    const DASHBOARD = await getSingleInstance();
-    DASHBOARD.usersDashboard.totalDeleted.push(new Date(Date.now()));
-    DASHBOARD.save();
     return User.findByIdAndDelete(user._id);
 };
 
 
 async function getUserById(id) {
-    return User.findById(id);
+    if (!isValidObjectId(id)) {
+        throw new Error("Invalid user ID!");
+    }
+    const user = await User.findById(id);
+    if (!user) {
+        throw new Error(`User with ID ${id} does not exist!`);
+    }
+    return user;
 };
 
 module.exports = {
