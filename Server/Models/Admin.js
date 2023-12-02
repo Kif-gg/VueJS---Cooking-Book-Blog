@@ -14,7 +14,7 @@ const adminSchema = new Schema({
         required: [true, "Password is required!"]
     },
     hashedPin: {
-        type: Number,
+        type: String,
         required: [true, "PIN is required!"]
     }
 });
