@@ -1,20 +1,10 @@
-const { getThreeRandomRecipes, getAllRecipes, getRecipesFiltered, getRecipeById, addRecipeToFavorites, removeRecipeFromFavorites } = require("../Services/recipeService");
+const { getAllRecipes, getRecipesFiltered, getRecipeById, addRecipeToFavorites, removeRecipeFromFavorites } = require("../Services/recipeService");
 const { parseError } = require("../Util/errorParser");
 const { allowUsersOnly } = require("../Middlewares/guard");
 const { postOrEditReview, deleteReview, getReviewById } = require("../Services/reviewService");
 const { getUserById } = require("../Services/userService");
 
 const recipeController = require("express").Router();
-
-recipeController.get("/", async (req, res) => {
-    try {
-        const homeRecipes = await getThreeRandomRecipes();
-        res.json(homeRecipes);
-    } catch (error) {
-        const message = parseError(error);
-        res.status(400).json({ message });
-    }
-});
 
 recipeController.get("/", async (req, res) => {
     try {
