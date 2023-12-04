@@ -53,6 +53,28 @@ userController.get("/profile", allowUsersOnly(), async (req, res) => {
     }
 });
 
+userController.get("/profile/favorites", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await (await getUserById(req.user._id)).populate("favorites");
+        const favorites = user.favorites;
+        res.json(favorites);
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
+
+userController.get("/profile/reviews", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await (await getUserById(req.user._id)).populate("reviews");
+        const reviews = user.reviews;
+        res.json(reviews);
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
+
 userController.put("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const fieldsToUpdate = Object.keys(req.body);
