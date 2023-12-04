@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 const session = require("./Middlewares/session");
 const trimBody = require("./Middlewares/trimBody");
 const { getSingleInstance } = require("./Models/Dashboard");
+const homeController = require("./Controllers/homeController");
 const userController = require("./Controllers/userController");
 const recipeController = require("./Controllers/recipeController");
 const adminController = require("./Controllers/adminController");
@@ -30,6 +31,7 @@ async function start() {
             res.json({ message: `REST SERVICE OPERATIONAL => URL PATH: ${req.url}` });
         });
 
+        app.use("/", homeController);
         app.use("/users", userController);
         app.use("/recipes", recipeController);
         app.use("/secret-path/admin", adminController);
