@@ -11,6 +11,11 @@ async function postOrEditReview(user, recipe, formData, reviewFromEditMode) {
         if (!userPostedReview) {
             throw new Error(`User with ID ${user._id} did not post a review with ID ${review._id}!`);
         }
+    } else {
+        const userPostedReview = user.find(review => review.userId == user._id);
+        if (userPostedReview) {
+            throw new Error(`You already posted a review on this recipe!`);
+        }
     }
 
     let errorStack = "";
