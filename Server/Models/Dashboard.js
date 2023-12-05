@@ -39,7 +39,7 @@ async function getSingleInstance() {
     if (!(await Dashboard.findOne({}))) {
         await Dashboard.create({});
     }
-    return await Dashboard.findOne({});
+    return Dashboard.findOne({});
 };
 
 module.exports = {
