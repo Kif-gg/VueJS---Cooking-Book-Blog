@@ -23,7 +23,7 @@ function allowAdminsOnly() {
         if (req.user && req.user.email && !req.user.username) {
             next();
         } else {
-            res.status(400).json({ message: "You have no permission!" });
+            res.status(403).json({ message: "You have no permission!" });
         }
     }
 };
@@ -33,7 +33,7 @@ function allowAnyAuthenticated() {
         if (req.user) {
             next();
         } else {
-            res.status(400).json({ message: "Login is required!" });
+            res.status(401).json({ message: "Login is required!" });
         }
     }
 };
