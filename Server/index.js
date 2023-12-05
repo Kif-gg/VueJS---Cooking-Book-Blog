@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const session = require("./Middlewares/session");
 const trimBody = require("./Middlewares/trimBody");
+const cors = require("./Middlewares/cors");
 const { getSingleInstance } = require("./Models/Dashboard");
 const homeController = require("./Controllers/homeController");
 const userController = require("./Controllers/userController");
@@ -26,6 +27,7 @@ async function start() {
         app.use(cookieParser());
         app.use(trimBody());
         app.use(session());
+        app.use(cors())
 
         app.all("/REST-TEST*", (req, res) => {
             res.json({ message: `REST SERVICE OPERATIONAL => URL PATH: ${req.url}` });

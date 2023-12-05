@@ -10,11 +10,11 @@ userController.post("/register", allowGuestsOnly(), async (req, res) => {
         const DASHBOARD = req.app.locals.DASHBOARD;
         DASHBOARD.usersDashboard.totalRegistered.unshift(new Date(Date.now()));
         await DASHBOARD.save();
-        res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
+        res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true, sameSite: "lax" });
         res.status(201).json(token);
     } catch (error) {
         const message = parseError(error);
-        res.cookie("AUTHORIZATION", "alabala", { maxAge: 0 });
+        res.cookie("AUTHORIZATION", "alabala", { maxAge: 0, sameSite: "lax" });
         res.status(400).json({ message });
     }
 });
@@ -22,11 +22,11 @@ userController.post("/register", allowGuestsOnly(), async (req, res) => {
 userController.post("/login", allowGuestsOnly(), async (req, res) => {
     try {
         const token = await login(req.body);
-        res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true });
+        res.cookie("AUTHORIZATION", token.accessToken, { httpOnly: true, sameSite: "lax" });
         res.json(token);
     } catch (error) {
         const message = parseError(error);
-        res.cookie("AUTHORIZATION", "alabala", { maxAge: 0 });
+        res.cookie("AUTHORIZATION", "alabala", { maxAge: 0, sameSite: "lax" });
         res.status(400).json({ message });
     }
 });

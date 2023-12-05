@@ -9,11 +9,11 @@ const adminController = require("express").Router();
 adminController.post("/login", allowGuestsOnly(), async (req, res) => {
     try {
         const admin = await login(req.body);
-        res.cookie("AUTHORIZATION", admin.accessToken, { httpOnly: true });
+        res.cookie("AUTHORIZATION", admin.accessToken, { httpOnly: true, sameSite: "lax" });
         res.json(admin);
     } catch (error) {
         const message = parseError(error);
-        res.cookie("AUTHORIZATION", "alabala", { maxAge: 0 });
+        res.cookie("AUTHORIZATION", "alabala", { maxAge: 0, sameSite: "lax" });
         res.status(400).json({ message });
     }
 });
