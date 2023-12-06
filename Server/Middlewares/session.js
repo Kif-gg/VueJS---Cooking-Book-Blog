@@ -10,7 +10,7 @@ module.exports = () => async (req, res, next) => {
             req.token = token;
         } catch (error) {
             const message = parseError(error);
-            res.cookie('AUTHORIZATION', 'alabala', { maxAge: 0 });
+            res.cookie('AUTHORIZATION', 'alabala', { maxAge: 0, sameSite: "lax" });
             return res.status(401).json({ message });
         }
     }

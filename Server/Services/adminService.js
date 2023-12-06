@@ -99,7 +99,7 @@ async function getDashboard() {
 };
 
 async function createOrEditRecipe(formData, recipeFromEditMode) {
-    const { imgUrl, name, status, description, productsNeeded, instructions } = formData;
+    const { imgUrl, name, category, description, productsNeeded, instructions } = formData;
 
     let errorStack = "";
     if (!imgUrl) {
@@ -114,8 +114,8 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
     } else if (name.length > 100) {
         errorStack += "Name length must not exceed 100 characters!\r\n";
     }
-    if (!status) {
-        errorStack += "status is required!\r\n";
+    if (!category) {
+        errorStack += "Category is required!\r\n";
     }
     if (!description) {
         errorStack += "Description is required!\r\n";
@@ -136,7 +136,7 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
     if (recipeFromEditMode) {
         if (recipeFromEditMode.imgUrl == imgUrl
             && recipeFromEditMode.name == name
-            && recipeFromEditMode.status == status
+            && recipeFromEditMode.category == category
             && recipeFromEditMode.description == description
             && recipeFromEditMode.productsNeeded == productsNeeded
             && recipeFromEditMode.instructions == instructions) {
@@ -151,7 +151,7 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
     if (recipeFromEditMode) {
         recipeFromEditMode.imgUrl = imgUrl;
         recipeFromEditMode.name = name;
-        recipeFromEditMode.status = status;
+        recipeFromEditMode.category = category;
         recipeFromEditMode.description = description;
         recipeFromEditMode.productsNeeded = productsNeeded;
         recipeFromEditMode.instructions = instructions;
@@ -161,7 +161,7 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
     return Recipe.create({
         imgUrl,
         name,
-        status,
+        category,
         description,
         productsNeeded,
         instructions
