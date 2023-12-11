@@ -2,11 +2,11 @@ const Admin = require("../Models/Admin");
 const BlacklistedToken = require("../Models/BlacklistedToken");
 const Recipe = require("../Models/Recipe");
 const User = require("../Models/User");
+const Review = require("../Models/Review");
 const bcrypt = require("bcrypt");
 const { createToken } = require("../Util/tokenManager");
 const { validateImgUrl } = require("../Util/inputValidator");
 const { getSingleInstance } = require("../Models/Dashboard");
-const { getTodaysRecords, getThisWeeksRecords } = require("../Util/dateFilter");
 const { createRegExp } = require("../Util/regexGenerator");
 
 async function login(formData) {
@@ -37,64 +37,10 @@ async function logout(token) {
 async function getDashboard() {
     const { usersDashboard, recipesDashboard, reviewsDashboard } = await getSingleInstance();
 
-    const usersCurrently = usersDashboard.totalRegistered.length - usersDashboard.totalDeleted.length;
-    const usersRegisteredToday = getTodaysRecords(usersDashboard.totalRegistered).length;
-    const usersRegisteredThisWeek = getThisWeeksRecords(usersDashboard.totalRegistered).length;
-    const usersRegisteredOverall = usersDashboard.totalRegistered.length;
-
-    const usersDeletedToday = getTodaysRecords(usersDashboard.totalDeleted).length;
-    const usersDeletedThisWeek = getThisWeeksRecords(usersDashboard.totalDeleted).length;;
-    const usersDeletedOverall = usersDashboard.totalDeleted.length;
-
-    const recipesCurrently = recipesDashboard.totalCreated.length - recipesDashboard.totalDeleted.length;
-    const recipesCreatedToday = getTodaysRecords(recipesDashboard.totalCreated).length;
-    const recipesCreatedThisWeek = getThisWeeksRecords(recipesDashboard.totalCreated).length;
-    const recipesCreatedOverall = recipesDashboard.totalCreated.length;
-
-    const recipesDeletedToday = getTodaysRecords(recipesDashboard.totalDeleted).length;
-    const recipesDeletedThisWeek = getThisWeeksRecords(recipesDashboard.totalDeleted).length;
-    const recipesDeletedOverall = recipesDashboard.totalDeleted.length;
-
-    const reviewsCurrently = reviewsDashboard.totalPosted.length - reviewsDashboard.totalDeleted.length;
-    const reviewsPostedToday = getTodaysRecords(reviewsDashboard.totalPosted).length;
-    const reviewsPostedThisWeek = getThisWeeksRecords(reviewsDashboard.totalPosted).length;
-    const reviewsPostedOverall = reviewsDashboard.totalPosted.length;
-
-    const reviewsDeletedToday = getTodaysRecords(reviewsDashboard.totalDeleted).length;
-    const reviewsDeletedThisWeek = getThisWeeksRecords(reviewsDashboard.totalDeleted).length;
-    const reviewsDeletedOverall = reviewsDashboard.totalDeleted.length;
-
     return {
-        usersDashboard: {
-            usersCurrently,
-            usersRegisteredToday,
-            usersRegisteredThisWeek,
-            usersRegisteredOverall,
-
-            usersDeletedToday,
-            usersDeletedThisWeek,
-            usersDeletedOverall
-        },
-        recipesDashboard: {
-            recipesCurrently,
-            recipesCreatedToday,
-            recipesCreatedThisWeek,
-            recipesCreatedOverall,
-
-            recipesDeletedToday,
-            recipesDeletedThisWeek,
-            recipesDeletedOverall
-        },
-        reviewsDashboard: {
-            reviewsCurrently,
-            reviewsPostedToday,
-            reviewsPostedThisWeek,
-            reviewsPostedOverall,
-
-            reviewsDeletedToday,
-            reviewsDeletedThisWeek,
-            reviewsDeletedOverall
-        }
+        usersDashboard,
+        recipesDashboard,
+        reviewsDashboard
     };
 };
 
@@ -126,6 +72,8 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
     }
     if (!productsNeeded) {
         errorStack += "Products are required!\r\n";
+    } else if (productsNeeded.split(", ").length <= 1) {
+        errorStack += "Please separate the products just by exactly ', '!\r\n";
     }
     if (!instructions) {
         errorStack += "Instructions are required!\r\n";
@@ -153,7 +101,7 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
         recipeFromEditMode.name = name;
         recipeFromEditMode.category = category;
         recipeFromEditMode.description = description;
-        recipeFromEditMode.productsNeeded = productsNeeded;
+        recipeFromEditMode.productsNeeded = productsNeeded.split(", ");
         recipeFromEditMode.instructions = instructions;
         return recipeFromEditMode.save();
     }
@@ -163,17 +111,36 @@ async function createOrEditRecipe(formData, recipeFromEditMode) {
         name,
         category,
         description,
-        productsNeeded,
+        productsNeeded: productsNeeded.split(", "),
         instructions
     });
 };
 
 async function deleteRecipe(recipe) {
-    return Recipe.findByIdAndDelete(recipe._id);
+    const users = await User.find({ favorites: recipe._id });
+    const reviews = await Review.find({});
+    for (const user of users) {
+        user.favorites.splice(user.favorites.findIndex(fav => fav._id.toString() === recipe._id.toString()), 1);
+        user.save();
+    }
+    let deletedCount = 0;
+    for (const review of reviews) {
+        if (recipe.reviews.find(rev => rev._id.toString() === review._id.toString())) {
+            const users2 = await User.find({ reviews: review._id })
+            for (const user of users2) {
+                user.reviews.splice(user.reviews.findIndex(rev => rev._id.toString() === review._id.toString()));
+                user.save();
+            }
+            await Review.findByIdAndDelete(review._id);
+            deletedCount++;
+        }
+    }
+    await Recipe.findByIdAndDelete(recipe._id);
+    return deletedCount;
 };
 
 async function getAllUsers() {
-    return User.find({});
+    return User.find({}).sort({ username: 1 });
 };
 
 async function getUsersFiltered(formData) {
@@ -188,7 +155,10 @@ async function getUsersFiltered(formData) {
     } else {
         status = { $in: [true, false] };
     }
-    if (!criteria || (criteria.toLowerCase() != "username" && criteria.toLowerCase() != "date-registered")) {
+    if (criteria.toLowerCase() == "createdat") {
+        criteria = "createdAt";
+    }
+    if (!criteria || (criteria.toLowerCase() != "username" && criteria.toLowerCase() != "createdat")) {
         criteria = "username";
     }
     if (!direction || direction.toLowerCase() != "descending") {
@@ -204,13 +174,23 @@ async function getUsersFiltered(formData) {
 };
 
 async function editUser(user, formData) {
-    const { checkboxChecked } = formData;
-    user.blocked = checkboxChecked;
+    const { blocked } = formData;
+    user.blocked = blocked;
     return user.save();
 };
 
 async function deleteUser(user) {
-    return User.findByIdAndDelete(user._id);
+    const recipes = await Recipe.find({}).populate('reviews');
+    for (const recipe of recipes) {
+        const index = recipe.reviews.findIndex(rev => rev.userId.toString() === user._id.toString());
+        if (index >= 0) {
+            recipe.reviews.splice(index, 1);
+            await recipe.save();
+        }
+    }
+    const deletedResult = await Review.deleteMany({ userId: user._id });
+    await User.findByIdAndDelete(user._id);
+    return deletedResult;
 };
 
 module.exports = {
