@@ -45,7 +45,7 @@ userController.get("/logout", allowAnyAuthenticated(), async (req, res) => {
 
 userController.get("/profile", allowUsersOnly(), async (req, res) => {
     try {
-        const user = await getUserById(req.user._id);
+        const user = await (await (await getUserById(req.user._id)).populate('reviews')).populate('favorites');
         res.json(user);
     } catch (error) {
         const message = parseError(error);
@@ -55,7 +55,7 @@ userController.get("/profile", allowUsersOnly(), async (req, res) => {
 
 userController.get("/profile/favorites", allowUsersOnly(), async (req, res) => {
     try {
-        const user = await (await getUserById(req.user._id)).populate("favorites");
+        const user = await (await getUserById(req.user._id)).populate({ path: "favorites", populate: { path: "reviews" } });
         const favorites = user.favorites;
         res.json(favorites);
     } catch (error) {
@@ -97,8 +97,11 @@ userController.put("/profile", allowUsersOnly(), async (req, res) => {
 userController.delete("/profile", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
-        await deleteUser(user, req.body);
+        const result = await deleteUser(user, req.body);
         const DASHBOARD = req.app.locals.DASHBOARD;
+        for (let i = 0; i < result; i++) {
+            DASHBOARD.reviewsDashboard.totalDeleted.unshift(new Date(Date.now()));
+        }
         DASHBOARD.usersDashboard.totalDeleted.unshift(new Date(Date.now()));
         await DASHBOARD.save();
         res.status(204).end();
