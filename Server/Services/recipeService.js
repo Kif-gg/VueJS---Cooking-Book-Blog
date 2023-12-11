@@ -31,13 +31,13 @@ async function getRecipesFiltered(formData) {
 
     return Recipe
         .find({ category: categoryMatch })
-        .or([{ "name": searchMatch }, { "description": searchMatch }, { "productsNeeded": searchMatch }, { "instructions": searchMatch }])
+        .or([{ "name": searchMatch }, { "description": searchMatch }, { "productsNeeded": { $in: [searchMatch] } }, { "instructions": searchMatch }])
         .sort({ [criteria]: direction })
         .populate("reviews");
 };
 
 async function getRecipeById(id) {
-    if (!isValidObjectId(req.params.id)) {
+    if (!isValidObjectId(id)) {
         throw new Error("Invalid recipe ID!");
     }
     const recipe = await Recipe.findById(id).populate("reviews");
@@ -48,7 +48,7 @@ async function getRecipeById(id) {
 };
 
 async function addRecipeToFavorites(user, recipe) {
-    const hasInFavorites = user.favorites.find(favorite => favorite._id == recipe._id);
+    const hasInFavorites = user.favorites.find(favorite => favorite._id.toString() == recipe._id.toString());
     if (hasInFavorites) {
         throw new Error("You already added this recipe to Your favorites!");
     }
@@ -57,11 +57,11 @@ async function addRecipeToFavorites(user, recipe) {
 }
 
 async function removeRecipeFromFavorites(user, recipe) {
-    const hasInFavorites = user.favorites.find(favorite => favorite._id == recipe._id);
+    const hasInFavorites = user.favorites.find(favorite => favorite._id.toString() == recipe._id.toString());
     if (!hasInFavorites) {
         throw new Error("You haven't added this recipe to Your favorites!");
     }
-    user.favorites.splice(user.favorites.findIndex(recipe._id), 1);
+    user.favorites.splice(user.favorites.findIndex(recipe => recipe._id.toString() == hasInFavorites._id.toString()), 1);
     return user.save();
 }
 
