@@ -15,7 +15,6 @@ import UserNav from '../user-only/UserNav.vue';
 import AdminNav from '../admin-only/AdminNav.vue';
 import HeaderQuote from './HeaderQuote.vue';
 import { verifyString } from '../../util/pseudoHasher';
-import { useEditModeStore } from '../../stores/editMode';
 
 export default {
     components: { GuestNav, UserNav, AdminNav, HeaderQuote },
