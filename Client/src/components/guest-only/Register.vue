@@ -32,7 +32,7 @@
 
             <button type="submit" class="add-submit-btn" :disabled="validateBeforeSubmit">Register</button>
         </form>
-        <p>You already have an account? <a href="login.html">Log in here.</a></p>
+        <p>You already have an account? <RouterLink to="/login">Log in here.</RouterLink></p>
     </main>
 </template>
 
@@ -42,9 +42,10 @@ import ShowHidePass from '../common/ShowHidePass.vue';
 import { validateUsername, validateEmail, validatePassword } from '../../util/validator';
 import { useAuthenticatedStore } from '../../stores/authenticated';
 import Loader from '../common/Loader.vue';
+import { RouterLink } from 'vue-router';
 
 export default {
-    components: { ShowHidePass, Loader },
+    components: { ShowHidePass, Loader, RouterLink },
     data() {
         return {
             formData: {

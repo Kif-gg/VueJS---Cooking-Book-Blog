@@ -15,7 +15,7 @@
 
             <button type="submit" class="add-submit-btn">Login</button>
         </form>
-        <p>You don't have an account? <a href="register.html">Register here.</a></p>
+        <p>You don't have an account? <RouterLink to="/register">Register here.</RouterLink></p>
     </main>
 </template>
 
@@ -24,8 +24,9 @@ import ShowHidePass from '../common/ShowHidePass.vue';
 import { login } from '../../services/userService';
 import { useAuthenticatedStore } from '../../stores/authenticated';
 import Loader from '../common/Loader.vue';
+import { RouterLink } from 'vue-router';
 export default {
-    components: { ShowHidePass, Loader },
+    components: { ShowHidePass, Loader, RouterLink },
     data() {
         return {
             formData: {
