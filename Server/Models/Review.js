@@ -5,6 +5,10 @@ const reviewSchema = new Schema({
         type: ObjectId,
         ref: "User"
     },
+    username: {
+        type: String,
+        required: true
+    },
     rating: {
         type: Number,
         required: [true, "Rating is required before posting review!"],
