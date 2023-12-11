@@ -1,0 +1,142 @@
+.create-edit-recipe form,
+.login form,
+.register form,
+.profile form,
+.a-login form {
+    font-size: 20px;
+    padding: 50px;
+    box-shadow: 0 0 20px #00000080;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 60%;
+    margin: 0 auto;
+    transition: background-color 0.3s ease;
+}
+
+textarea {
+    box-shadow: inset 0 0 5px #00000050;
+    background-color: #ffffff;
+    resize: none;
+    line-height: normal;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type=text],
+input[type=password] {
+    border-radius: 5px;
+    height: 40px;
+    background-color: #ffffff;
+    box-shadow: inset 0 0 5px #00000050;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+input[type=radio] {
+    display: none;
+}
+
+label {
+    cursor: pointer;
+}
+
+label {
+    margin-bottom: -18px;
+    font-size: 24px;
+}
+
+.create-edit-recipe input,
+.login input,
+.register input,
+.profile input,
+.create-edit-recipe textarea {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.create-edit-recipe input,
+.login input,
+.register input,
+.profile input {
+    text-align: center;
+}
+
+.create-edit-recipe select {
+    text-align: center;
+    cursor: pointer;
+    color: #6b8e23;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.invalid {
+    border-left: 6px solid #ff0000;
+}
+
+.valid {
+    border-left: 6px solid #008000;
+}
+
+.error {
+    font-weight: 700;
+    font-size: 20px;
+    color: #ff0000;
+    display: none;
+}
+
+.radio-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+
+.radio-stars .star {
+    fill: #ffffff;
+}
+
+.radio-stars label:hover~label .star,
+.radio-stars label:hover .star {
+    fill: #ffa07a;
+}
+
+.radio-stars input:checked+label .star,
+.radio-stars input:checked+label~label .star {
+    fill: #ffd700;
+}
+
+/* Dark mode */
+
+.dark-mode .create-edit-recipe form,
+.dark-mode .login form,
+.dark-mode .register form,
+.dark-mode .profile form,
+.dark-mode .a-login form {
+    background-color: #7a7a7a;
+}
+
+.dark-mode textarea {
+    color: #ffffff;
+    border: 2px solid #4e4e4e;
+    background-color: #474747;
+}
+
+.dark-mode input[type=text],
+.dark-mode input[type=password] {
+    color: #ffffff;
+    border: 2px solid #4e4e4e;
+    background-color: #474747;
+}
+
+.dark-mode main form .invalid {
+    border-left: 6px solid #eb2a2a;
+}
+
+.dark-mode main form .valid {
+    border-left: 6px solid #50cd3f;
+}
+
+.dark-mode .error {
+    color: #eb2a2a;
+    text-shadow: 1px 1px 1px #000000;
+}
