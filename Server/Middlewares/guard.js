@@ -10,7 +10,7 @@ function allowGuestsOnly() {
 
 function allowUsersOnly() {
     return (req, res, next) => {
-        if (req.user && !req.user.email && req.user.username) {
+        if (req.user && req.user.username) {
             next();
         } else {
             res.status(401).json({ message: "Log in is required!" });
