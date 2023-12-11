@@ -1,0 +1,125 @@
+.sort-comment {
+    width: 50%;
+    margin: 0 auto;
+    color: #cd853f;
+    transition: color 0.3s ease;
+}
+
+.sort-comment select {
+    text-align: center;
+    cursor: pointer;
+    color: #6b8e23;
+    margin-left: 10px;
+}
+
+.sort-comment form {
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.sort-comment .filter-box {
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sort-comment form button {
+    color: #ffffff;
+    font-size: 20px;
+    padding: 15px;
+    cursor: pointer;
+    border: 1px solid #242424;
+    background-color: #ffa07a;
+}
+
+.sort-comment form button:hover {
+    text-decoration: 2px underline;
+}
+
+.comment-list .comments-per-day {
+    background-color: #f0f0f0;
+    margin-bottom: 30px;
+    padding: 30px;
+    box-shadow: 0 0 20px #00000080;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.comment-list h3 {
+    margin-top: -10px;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.comment-list a {
+    color: inherit;
+    display: block;
+    background-color: #ffffff;
+    text-align: start;
+    margin-bottom: -1px;
+    border-radius: 5px;
+    border: 1px solid #444444;
+    padding: 15px 25px;
+    font-size: 24px;
+}
+
+.comment-list a:hover {
+    background-color: #ffa07a;
+    color: #ffffff;
+}
+
+.comment-list a:hover span {
+    background-color: #3fc4cd;
+    text-decoration: 2px underline;
+}
+
+.comment-list .comments-per-day span {
+    padding: 5px;
+    color: inherit;
+    font-weight: 600;
+}
+
+.comment-list .comments-per-day time {
+    font-weight: 600;
+}
+
+/* Dark mode */
+
+.dark-mode .sort-comment {
+    color: #ffffff;
+}
+
+.dark-mode .sort-comment form button {
+    color: #ffffff;
+    font-size: 20px;
+    padding: 15px;
+    cursor: pointer;
+    border: 1px solid #242424;
+    background-color: #222222;
+}
+
+.dark-mode .sort-comment form button:hover {
+    background-color: #0c0c0c;
+    color: #ffffff;
+}
+
+.dark-mode .comment-list .comments-per-day {
+    background-color: #7a7a7a;
+}
+.dark-mode .comment-list a {
+    text-shadow: 1px 1px 1px #000000;
+    background-color: #b1b1b1;
+}
+
+.dark-mode .comment-list a:hover {
+    background-color: #5c5c5c;
+    color: #ffffff;
+}
+
+.dark-mode .comment-list a:hover span {
+    background-color: #3fc4cd;
+}
