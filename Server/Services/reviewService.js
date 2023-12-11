@@ -3,16 +3,16 @@ const Review = require("../Models/Review");
 
 async function postOrEditReview(user, recipe, formData, reviewFromEditMode) {
     if (reviewFromEditMode) {
-        const recipeHasReview = recipe.find(review => review._id == reviewFromEditMode._id);
+        const recipeHasReview = recipe.reviews.find(review => review._id.toString() == reviewFromEditMode._id.toString());
         if (!recipeHasReview) {
             throw new Error(`Recipe with ID ${recipe._id} does not have a review with ID ${review._id}!`);
         }
-        const userPostedReview = user.find(review => review.userId == user._id);
+        const userPostedReview = recipe.reviews.find(review => review.userId.toString() == user._id.toString());
         if (!userPostedReview) {
             throw new Error(`User with ID ${user._id} did not post a review with ID ${review._id}!`);
         }
     } else {
-        const userPostedReview = user.find(review => review.userId == user._id);
+        const userPostedReview = recipe.reviews.find(review => review.userId.toString() == user._id.toString());
         if (userPostedReview) {
             throw new Error(`You already posted a review on this recipe!`);
         }
@@ -53,6 +53,7 @@ async function postOrEditReview(user, recipe, formData, reviewFromEditMode) {
 
     const review = await Review.create({
         userId: user._id,
+        username: user.username,
         rating: Number(rating),
         comment
     });
@@ -65,19 +66,23 @@ async function postOrEditReview(user, recipe, formData, reviewFromEditMode) {
 };
 
 async function deleteReview(user, recipe, reviewToDelete) {
-    const recipeHasReview = recipe.find(review => review._id == reviewToDelete._id);
+    const recipeHasReview = recipe.reviews.find(review => review._id.toString() == reviewToDelete._id.toString());
     if (!recipeHasReview) {
-        throw new Error(`Recipe with ID ${recipe._id} does not have a review with ID ${review._id}!`);
+        throw new Error(`Recipe with ID ${recipe._id} does not have a review with ID ${reviewToDelete._id}!`);
     }
-    const userPostedReview = user.find(review => review.userId == user._id);
+    const userPostedReview = recipe.reviews.find(review => review.userId.toString() == user._id.toString());
     if (!userPostedReview) {
-        throw new Error(`User with ID ${user._id} did not post a review with ID ${review._id}!`);
+        throw new Error(`User with ID ${user._id} did not post a review with ID ${reviewToDelete._id}!`);
     }
+    user.reviews.splice(user.reviews.findIndex(rev => rev._id.toString() == userPostedReview._id.toString()), 1);
+    user.save();
+    recipe.reviews.splice(recipe.reviews.findIndex(rev => rev._id.toString() == recipeHasReview._id.toString()), 1);
+    recipe.save();
     return Review.findByIdAndDelete(reviewToDelete._id);
 };
 
 async function getReviewById(id) {
-    if (isValidObjectId(id)) {
+    if (!isValidObjectId(id)) {
         throw new Error("Invalid review ID!");
     }
     const review = await Review.findById(id);
