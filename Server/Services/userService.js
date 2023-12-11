@@ -1,9 +1,11 @@
 const { isValidObjectId } = require("mongoose");
 const User = require("../Models/User");
+const Review = require("../Models/Review");
 const BlacklistedToken = require("../Models/BlacklistedToken");
 const bcrypt = require("bcrypt");
 const { validateUsername, validateEmail } = require("../Util/inputValidator");
 const { createToken } = require("../Util/tokenManager");
+const { getAllRecipes } = require("../Services/recipeService");
 
 async function register(formData) {
     let errorStack = "";
@@ -177,7 +179,17 @@ async function deleteUser(user, formData) {
         throw new Error(errorStack);
     }
 
-    return User.findByIdAndDelete(user._id);
+    const recipes = await getAllRecipes();
+    for (const recipe of recipes) {
+        const index = recipe.reviews.findIndex(rev => rev.userId.toString() === user._id.toString());
+        if (index >= 0) {
+            recipe.reviews.splice(index, 1);
+            await recipe.save();
+        }
+    }
+    const deletedResult = await Review.deleteMany({ userId: user._id });
+    await User.findByIdAndDelete(user._id);
+    return deletedResult.deletedCount;
 };
 
 
