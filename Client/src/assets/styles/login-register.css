@@ -1,0 +1,73 @@
+.login form,
+.register form,
+.a-login form {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 35%;
+}
+
+.register form {
+    width: 40%;
+}
+
+.login p,
+.register p {
+    font-size: 26px;
+}
+
+.login a,
+.register a {
+    padding: 10px;
+    color: #cd853f;
+    text-decoration: 2px underline;
+}
+
+.login a:hover,
+.register a:hover {
+    background-color: #ffa07a;
+    color: #ffffff;
+}
+
+.pass-text {
+    width: fit-content;
+    text-align: left;
+    margin-left: 50px;
+    margin-top: -15px;
+    cursor: pointer;
+}
+
+.a-login .pass-text {
+    margin-left: 5px;
+}
+
+.icon {
+    fill: #cd853f;
+    transition: fill 0.3s ease;
+    height: 18px;
+}
+
+.locked {
+    text-decoration: underline;
+    font-size: 20px;
+}
+
+.unlocked {
+    text-decoration: underline;
+    font-size: 20px;
+}
+
+/* Dark mode */
+
+.dark-mode .login a,
+.dark-mode .register a {
+    color: #ffffff;
+}
+
+.dark-mode .login a:hover,
+.dark-mode .register a:hover {
+    background-color: #383838;
+}
+
+.dark-mode .icon {
+    fill: #ffffff;
+}
