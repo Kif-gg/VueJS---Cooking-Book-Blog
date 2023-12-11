@@ -9,8 +9,8 @@ const recipeController = require("express").Router();
 recipeController.get("/", async (req, res) => {
     try {
         let recipes;
-        if (Object.keys(req.body).length > 0) {
-            recipes = await getRecipesFiltered(req.body)
+        if (Object.keys(req.query).length > 0) {
+            recipes = await getRecipesFiltered(req.query);
         } else {
             recipes = await getAllRecipes();
         }
@@ -34,41 +34,12 @@ recipeController.get("/:id", async (req, res) => {
 recipeController.post("/:id", allowUsersOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.user._id);
-        const recipeDetails = await getRecipeById(req.params.id);
-        const review = postOrEditReview(user, recipeDetails, req.body);
+        const recipeDetails = await (await getRecipeById(req.params.id)).populate('reviews');
+        const review = await postOrEditReview(user, recipeDetails, req.body);
         const DASHBOARD = req.app.locals.DASHBOARD;
         DASHBOARD.reviewsDashboard.totalPosted.unshift(new Date(Date.now()));
         await DASHBOARD.save();
         res.status(201).json(review);
-    } catch (error) {
-        const message = parseError(error);
-        res.status(400).json({ message });
-    }
-});
-
-recipeController.put("/:id/:reviewId", allowUsersOnly(), async (req, res) => {
-    try {
-        const user = await getUserById(req.user._id);
-        const recipeDetails = await getRecipeById(req.params.id);
-        const reviewToEdit = await getReviewById(req.params.reviewId);
-        const editedReview = postOrEditReview(user, recipeDetails, req.body, reviewToEdit);
-        res.json(editedReview);
-    } catch (error) {
-        const message = parseError(error);
-        res.status(400).json({ message });
-    }
-});
-
-recipeController.delete("/:id/:reviewId", allowUsersOnly(), async (req, res) => {
-    try {
-        const user = await getUserById(req.user._id);
-        const recipeDetails = await getRecipeById(req.params.id);
-        const reviewToDelete = await getReviewById(req.params.reviewId);
-        await deleteReview(user, recipeDetails, reviewToDelete);
-        const DASHBOARD = req.app.locals.DASHBOARD;
-        DASHBOARD.reviewsDashboard.totalDeleted.unshift(new Date(Date.now()));
-        await DASHBOARD.save();
-        res.status(204).end();
     } catch (error) {
         const message = parseError(error);
         res.status(400).json({ message });
@@ -80,7 +51,7 @@ recipeController.post("/:id/favorite", async (req, res) => {
         const user = await getUserById(req.user._id);
         const recipe = await getRecipeById(req.params.id);
         await addRecipeToFavorites(user, recipe);
-        res.status(201).end();
+        res.status(201).json(recipe);
     } catch (error) {
         const message = parseError(error);
         res.status(400).json({ message });
@@ -92,6 +63,35 @@ recipeController.delete("/:id/favorite", async (req, res) => {
         const user = await getUserById(req.user._id);
         const recipe = await getRecipeById(req.params.id);
         await removeRecipeFromFavorites(user, recipe);
+        res.status(204).end();
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
+
+recipeController.put("/:id/:reviewId", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await getUserById(req.user._id);
+        const recipeDetails = await (await getRecipeById(req.params.id)).populate('reviews');
+        const reviewToEdit = await getReviewById(req.params.reviewId);
+        const editedReview = await postOrEditReview(user, recipeDetails, req.body, reviewToEdit);
+        res.json(editedReview);
+    } catch (error) {
+        const message = parseError(error);
+        res.status(400).json({ message });
+    }
+});
+
+recipeController.delete("/:id/:reviewId", allowUsersOnly(), async (req, res) => {
+    try {
+        const user = await getUserById(req.user._id);
+        const recipeDetails = await (await getRecipeById(req.params.id)).populate('reviews');
+        const reviewToDelete = await getReviewById(req.params.reviewId);
+        await deleteReview(user, recipeDetails, reviewToDelete);
+        const DASHBOARD = req.app.locals.DASHBOARD;
+        DASHBOARD.reviewsDashboard.totalDeleted.unshift(new Date(Date.now()));
+        await DASHBOARD.save();
         res.status(204).end();
     } catch (error) {
         const message = parseError(error);
