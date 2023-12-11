@@ -1,0 +1,45 @@
+.favorites h3 {
+    font-size: 32px;
+}
+
+.favorites .favorite-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(350px, 390px));
+    padding: 50px;
+    row-gap: 25px;
+    justify-content: space-around;
+}
+
+.favorites p {
+    font-size: 24px;
+}
+
+.search-recipe:has(~.favorites) {
+    position: relative;
+    width: 20%;
+    display: block;
+    margin: 0 auto;
+}
+
+.search-recipe:has(~.favorites) form button {
+    position: absolute;
+    border-radius: 0;
+    height: fit-content;
+    width: fit-content;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 15px;
+    cursor: pointer;
+    border: 1px solid #242424;
+    background-color: #ffa07a;
+}
+
+/* Dark mode */
+
+.dark-mode .search-recipe:has(~.favorites) form button {
+    background-color: #6d6d6d;
+}
+
+.dark-mode .search-recipe:has(~.favorites) form button:hover {
+    background-color: #0c0c0c;
+}
