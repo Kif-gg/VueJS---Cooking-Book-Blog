@@ -1,0 +1,51 @@
+.a-landing-page {
+    font-size: 26px;
+}
+
+.statistics {
+    margin: 0 auto;
+    width: 70%;
+    padding: 30px;
+    margin-bottom: 50px;
+    box-shadow: 0 0 20px #00000080;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.statistics table {
+    width: 100%;
+}
+
+h3 {
+    font-size: 26px;
+}
+
+.positive {
+    color: #008000;
+}
+
+.negative {
+    color: #ff0000;
+}
+
+.neutral {
+    color: #333333;
+}
+
+/* Dark-mode */
+
+.dark-mode .positive {
+    color: #118a11;
+}
+
+.dark-mode .negative {
+    color: #eb2a2a;
+}
+
+.dark-mode .neutral {
+    color: #ffffff;
+}
+
+.dark-mode .statistics {
+    background-color: #7a7a7a;
+}
