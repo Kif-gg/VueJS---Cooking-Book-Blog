@@ -33,7 +33,18 @@ export default {
                 "Unlock the magic of the kitchen with every recipe",
                 "Creating culinary masterpieces one recipe at a time",
                 "From the stove to the soul, every dish has a tale",
-                "Elevate your plate, one recipe at a time"
+                "Elevate your plate, one recipe at a time",
+                "Bite into passion, savor the flavor symphony",
+                "Crafting joy through the alchemy of cooking",
+                "In the kitchen, imagination becomes an ingredient",
+                "Whisking dreams into reality, one recipe at a time",
+                "Cooking: where creativity meets the cutting board",
+                "Infuse every dish with a sprinkle of inspiration",
+                "Sculpting happiness with the hands and heart",
+                "Turning pots and pans into poetry on a plate",
+                "Cooking is the poetry of the palate",
+                "Flavors that whisper tales of culinary craftsmanship",
+                "The kitchen: a canvas, and recipes are the brushstrokes"
             ];
             const randomIndex = Math.floor(Math.random() * quotes.length);
             return quotes[randomIndex];
