@@ -1,0 +1,46 @@
+.not-found h2 {
+    margin-top: 35px;
+    margin-bottom: -20px;
+}
+
+.not-found p {
+    font-size: 28px;
+}
+
+.not-found svg {
+    transform: scale(0.7);
+}
+
+.not-found a {
+    font-size: 28px;
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    margin-top: 30px;
+    border: 1px solid #000000;
+    background-color: #ffa07a;
+    color: #ffffff;
+    padding: 20px;
+}
+
+.not-found a:hover {
+    color: #cd853f;
+    background-color: #ffdab9;
+    text-decoration: 2px underline;
+}
+
+.not-found h3 {
+    font-size: 40px;
+    margin-bottom: 40px;
+}
+
+/* Dark mode */
+
+.dark-mode .not-found a {
+    color: #fefefe;
+    background-color: #222222;
+}
+
+.dark-mode .not-found a:hover {
+    background-color: #0c0c0c;
+}
