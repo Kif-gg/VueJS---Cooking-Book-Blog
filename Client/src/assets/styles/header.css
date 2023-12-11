@@ -1,0 +1,123 @@
+.quote {
+    color: #cd853f;
+    text-shadow: 1px 1px 1px #000000;
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    font-size: 45px;
+    font-style: italic;
+    padding: 20px 0;
+    margin: 60px auto 0 auto;
+    width: 90%;
+    transition: color 0.3s ease;
+}
+
+header {
+    background-color: #ffdab9;
+    transition: background-color 0.3s ease;
+}
+
+nav {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    background-color: #ffa07a;
+    transition: background-color 0.3s ease;
+}
+
+nav ul {
+    display: flex;
+}
+
+nav li {
+    margin: 0 30px;
+}
+
+nav a {
+    text-transform: uppercase;
+    color: #ffffff;
+    font-size: 20px;
+    padding: 20px 40px;
+}
+
+nav a:hover {
+    color: #cd853f;
+    background-color: #ffdab9;
+    text-decoration: 2px underline;
+}
+
+nav a.current-page {
+    color: #ffffff;
+    background-color: #ff7b47;
+    text-decoration: 2px underline;
+    transition: background-color 0.3s ease;
+}
+
+.slider {
+    position: absolute;
+    right: 30px;
+    border: 1px solid #000000;
+    width: 100px;
+    margin-top: -5px;
+    background-color: #87ceeb;
+    height: 36px;
+    border-radius: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.slider input {
+    display: none;
+}
+
+.slider .thumb {
+    border: 1px solid #000000;
+    margin-top: 2px;
+    margin-left: 2px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    background-color: #ffd82b;
+    transition: all 0.3s ease;
+}
+
+/* Dark mode */
+
+.dark-mode .quote {
+    color: #dddddd;
+    text-shadow: 1px 1px 1px #000000;
+}
+
+.dark-mode header {
+    background-color: #3f3f3f;
+}
+
+.dark-mode nav {
+    background-color: #242424;
+}
+
+.dark-mode nav a {
+    color: #dddddd;
+}
+
+.dark-mode nav a:hover {
+    background-color: #3f3f3f;
+}
+
+.dark-mode nav a.current-page {
+    background-color: #363636;
+}
+
+.dark-mode input[type=checkbox]:checked+.thumb,
+input[type=checkbox]:checked+.thumb {
+    background-color: #ffffff;
+    transform: translate(64px, 0);
+}
+
+.dark-mode .slider:has(input[type=checkbox]:checked),
+.slider:has(input[type=checkbox]:checked) {
+    background-color: #3f3f3f;
+}
