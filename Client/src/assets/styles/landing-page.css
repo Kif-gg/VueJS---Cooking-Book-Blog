@@ -1,0 +1,22 @@
+.landing-page section {
+    font-size: 24px;
+    padding: 50px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.landing-page .dish-card img {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.landing-page .dish-card h3 {
+    font-size: 28px;
+
+}
+
+.landing-page .dish-card article {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
