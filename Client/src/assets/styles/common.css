@@ -1,0 +1,246 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    transition: background-color 0.3s ease;
+}
+
+main {
+    background-color: #ffffff;
+    padding: 40px;
+    box-shadow: inset 0 0 10px #00000080;
+    width: 75%;
+    margin: 0 auto;
+    color: #cd853f;
+    text-align: center;
+    min-height: 60vh;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+main h2 {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.dish-card {
+    color: #cd853f;
+    width: 390px;
+    height: auto;
+    line-height: 1.5;
+    padding: 20px;
+    box-shadow: 0 0 20px #00000080;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.dish-card:hover {
+    transform: scale(1.07);
+}
+
+.dish-card img {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.dish-card article {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+main button {
+    cursor: pointer;
+    border-radius: 2px;
+    font-size: 22px;
+    padding: 25px;
+    border: 1px solid #00000080;
+    color: #ffffff;
+    background-color: #ffa07a;
+    width: 50%;
+    margin: 0 auto;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    color: #cd853f;
+    background-color: #ffdab9;
+}
+
+.add-submit-btn:hover:not(:disabled) {
+    color: #50cd3f;
+    border: 1px solid #50cd3f;
+    text-decoration: 2px underline;
+}
+
+.edit-cancel-btn:hover:not(:disabled) {
+    color: #3fc4cd;
+    border: 1px solid #3fc4cd;
+    text-decoration: 2px underline;
+}
+
+.delete-btn:hover:not(:disabled) {
+    color: #eb2a2a;
+    border: 1px solid #eb2a2a;
+    text-decoration: 2px underline;
+}
+
+table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    border: 2px solid #dddddd;
+    text-align: center;
+    padding: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+th {
+    background-color: #f2f2f2;
+    transition: background-color 0.3s ease;
+}
+
+.star {
+    fill: #ffd700;
+    margin-bottom: -5px;
+    width: 24px;
+    height: 30px;
+}
+
+.star path {
+    stroke: #000000;
+    stroke-width: 25;
+}
+
+.filter-icon {
+    position: relative;
+    top: 4px;
+    height: 24px;
+    fill: #cd853f;
+    transition: fill 0.3s ease;
+}
+
+.search-icon {
+    height: 24px;
+}
+
+.pagination {
+    margin-top: 50px;
+    position: relative;
+}
+
+.pagination a {
+    display: inline-block;
+    border: 1px solid #0c0c0c;
+    background-color: #ffa07a;
+    color: #ffffff;
+    padding: 15px 20px;
+}
+
+.pagination a:hover {
+    color: #cd853f;
+    background-color: #ffdab9;
+    text-decoration: 2px underline;
+}
+
+.pagination a.current-page {
+    color: #ffffff;
+    background-color: #ff7b47;
+    text-decoration: 2px underline;
+    transition: background-color 0.3s ease;
+}
+
+.pagination form {
+    height: 40px;
+    column-gap: 10px;
+    flex-direction: row;
+    position: absolute;
+    right: 10px;
+    top: 0px;
+}
+
+.pagination select {
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+    color: #6b8e23;
+}
+
+.pagination button {
+    width: fit-content;
+    padding: 10px 15px;
+}
+
+button:active,
+a:active {
+    filter: brightness(80%);
+}
+
+/* Dark mode */
+
+body.dark-mode {
+    background-color: #1a1a1a;
+}
+
+.dark-mode main {
+    background-color: #4e4e4e;
+    color: #fefefe;
+}
+
+.dark-mode .dish-card {
+    background-color: #888888;
+    color: #fefefe;
+}
+
+.dark-mode main button {
+    color: #fefefe;
+    background-color: #222222;
+}
+
+.dark-mode button:hover:not(:disabled) {
+    background-color: #0c0c0c;
+}
+
+.dark-mode th {
+    background-color: #575757;
+}
+
+.dark-mode td {
+    background-color: #b1b1b1;
+}
+
+.dark-mode .filter-icon {
+    fill: #cecece;
+}
+
+.dark-mode .pagination a {
+    background-color: #242424;
+}
+
+.dark-mode .pagination a:hover {
+    color: #ffffff;
+    background-color: #3f3f3f;
+}
+
+.dark-mode .pagination a.current-page {
+    background-color: #363636;
+    transition: background-color 0.3s ease;
+}
+
+.dark-mode .pagination button:hover {
+    color: #ffffff;
+}
+
+.dark-mode button:active,
+.dark-mode a:active {
+    filter: brightness(120%);
+}
