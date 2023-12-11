@@ -66,8 +66,11 @@ adminController.put("/recipes/:id", allowAdminsOnly(), async (req, res) => {
 adminController.delete("/recipes/:id", allowAdminsOnly(), async (req, res) => {
     try {
         const recipeToDelete = await getRecipeById(req.params.id);
-        await deleteRecipe(recipeToDelete);
+        const result = await deleteRecipe(recipeToDelete);
         const DASHBOARD = req.app.locals.DASHBOARD;
+        for (let i = 0; i < result; i++) {
+            DASHBOARD.reviewsDashboard.totalDeleted.unshift(new Date(Date.now()));
+        }
         DASHBOARD.recipesDashboard.totalDeleted.unshift(new Date(Date.now()));
         await DASHBOARD.save();
         res.status(204).end();
@@ -80,8 +83,8 @@ adminController.delete("/recipes/:id", allowAdminsOnly(), async (req, res) => {
 adminController.get("/users", allowAdminsOnly(), async (req, res) => {
     try {
         let users;
-        if (Object.keys(req.body).length > 0) {
-            users = await getUsersFiltered(req.body);
+        if (Object.keys(req.query).length > 0) {
+            users = await getUsersFiltered(req.query);
         } else {
             users = await getAllUsers();
         }
@@ -106,8 +109,11 @@ adminController.put("/users/:id", allowAdminsOnly(), async (req, res) => {
 adminController.delete("/users/:id", allowAdminsOnly(), async (req, res) => {
     try {
         const user = await getUserById(req.params.id);
-        await deleteUser(user);
+        const result = await deleteUser(user);
         const DASHBOARD = req.app.locals.DASHBOARD;
+        for (let i = 0; i < result; i++) {
+            DASHBOARD.reviewsDashboard.totalDeleted.unshift(new Date(Date.now()));
+        }
         DASHBOARD.usersDashboard.totalDeleted.unshift(new Date(Date.now()));
         await DASHBOARD.save();
         res.status(204).end();
