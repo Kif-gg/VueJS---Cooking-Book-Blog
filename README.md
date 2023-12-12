@@ -108,4 +108,4 @@ When you download the project:
 - The Server side will be started on the address **http://localhost:5173**
 # License
 
-The project is licensed under the [MIT](https://opensource.org/license/mit/) License
+The project is licensed under the [ISC](https://opensource.org/license/isc-license-txt/) License
