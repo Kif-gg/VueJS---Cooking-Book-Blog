@@ -93,6 +93,7 @@ export default {
                 event.currentTarget.classList.remove("valid");
                 event.currentTarget.nextSibling.style.display = "block";
                 event.currentTarget.nextSibling.textContent = "Repeated email does not match the new one!";
+                this.errorStack[errValue] = 1;
             }
         }
     },

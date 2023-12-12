@@ -122,6 +122,7 @@ export default {
                 event.currentTarget.classList.remove("valid");
                 event.currentTarget.nextSibling.nextSibling.style.display = "block";
                 event.currentTarget.nextSibling.nextSibling.textContent = "Repeated password does not match the original!";
+                this.errorStack[errValue] = 1;
             }
         }
     },
