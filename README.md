@@ -104,8 +104,8 @@ When you download the project:
 - With the first, navigate to the **Server** folder
   > type `npm i`, after the process is finished type `npm start`
 - With the second terminal navigate to the **Client** folder and repeat the previous commands.
-- The Client side will open usually on the address **http://localhost:3000**
-- The Server side will be started on the address **http://localhost:5173**
+- The Client side will open usually on the address **http://localhost:5173**
+- The Server side will be started on the address **http://localhost:3030**
 # License
 
 The project is licensed under the [ISC](https://opensource.org/license/isc-license-txt/) License
