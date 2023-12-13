@@ -1,3 +1,5 @@
+import { useAuthenticatedStore } from "../stores/authenticated";
+
 const request = async (method, url, data) => {
 
     const options = { method: method, mode: "cors", credentials: "include" };
@@ -19,8 +21,7 @@ const request = async (method, url, data) => {
     
     if (!response.ok) {
         if (response.status === 401) {
-            localStorage.removeItem("Authenticated");
-            localStorage.removeItem("User");
+            useAuthenticatedStore().setGuest();
         }
         throw new Error(result.message);
     }
