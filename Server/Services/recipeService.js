@@ -1,6 +1,7 @@
 const { isValidObjectId } = require("mongoose");
 const Recipe = require("../Models/Recipe");
 const { createRegExp } = require("../Util/regexGenerator");
+const { calcAvgRating } = require("../Util/avgRatingCalc");
 
 async function getThreeRandomRecipes() {
     const result = await Recipe.aggregate().sample(3);
@@ -29,11 +30,35 @@ async function getRecipesFiltered(formData) {
     const searchMatch = new RegExp(createRegExp(search), "is");
     const categoryMatch = new RegExp(category, "i");
 
-    return Recipe
+    const recipes = await Recipe
         .find({ category: categoryMatch })
         .or([{ "name": searchMatch }, { "description": searchMatch }, { "productsNeeded": { $in: [searchMatch] } }, { "instructions": searchMatch }])
-        .sort({ [criteria]: direction })
         .populate("reviews");
+
+    if (criteria.toLowerCase() == "rating") {
+        recipes.sort((a, b) => {
+            const avgA = calcAvgRating(a.reviews);
+            const avgB = calcAvgRating(b.reviews);
+            if (direction.toLowerCase() == "ascending") {
+                return avgA - avgB;
+            } else {
+                return avgB - avgA;
+            }
+        });
+    } else {
+        recipes.sort((a, b) => {
+            const valA = a[criteria];
+            const valB = b[criteria];
+
+            if (direction.toLowerCase() == "ascending") {
+                return valA.localeCompare(valB);
+            } else {
+                return valB.localeCompare(valA);
+            }
+        });
+    }
+
+    return recipes;
 };
 
 async function getRecipeById(id) {
