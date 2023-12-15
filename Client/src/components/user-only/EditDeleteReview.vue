@@ -37,6 +37,8 @@ export default {
                 if (confirm("Are You sure You want to DELETE Your review?\r\nTHIS CAN'T BE UNDONE!!!")) {
                     await deleteReview(useRecipesStore().currentRecipe._id, this.review._id);
                     useReviewsStore().reviews.splice(useReviewsStore().reviews.findIndex(rev => rev._id === this.review._id), 1);
+                    useRecipesStore().recipes.find(recipe => recipe._id === useRecipesStore().currentRecipe._id).reviews.splice(useRecipesStore().currentRecipe.reviews.findIndex(rev => rev._id === this.review._id), 1);
+                    useRecipesStore().currentRecipe.reviews.splice(useRecipesStore().currentRecipe.reviews.findIndex(rev => rev._id === this.review._id), 1);
                 }
             } catch (error) {
                 alert(error.message);

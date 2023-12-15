@@ -105,6 +105,8 @@ export default {
                     this.formData = {};
                     Array.from(document.getElementsByClassName("valid")).map(e => e.classList.remove("valid"));
                     useReviewsStore().reviews.unshift(result);
+                    useRecipesStore().recipes.find(recipe => recipe._id === useRecipesStore().currentRecipe._id).reviews.unshift(result);
+                    useRecipesStore().currentRecipe.reviews.unshift(result);
                     return result;
                 }
             } catch (error) {
