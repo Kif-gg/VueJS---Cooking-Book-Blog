@@ -57,10 +57,6 @@ export default {
             return useReviewsStore().reviews.filter(rev => rev.userId === useAuthenticatedStore().id).sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
-        },
-        recipe(review) {
-            const recipe = useRecipesStore().recipes.find(rec => rec.reviews.find(rev => rev._id === review._id));
-            return recipe;
         }
     },
     methods: {
