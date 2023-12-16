@@ -56,7 +56,8 @@ label {
 .create-edit-recipe input,
 .login input,
 .register input,
-.profile input {
+.profile input,
+.a-login input {
     text-align: center;
 }
 
