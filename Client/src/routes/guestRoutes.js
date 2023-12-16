@@ -7,6 +7,7 @@ export const guestRoutes = [
     {
         path: "/login",
         component: Login,
+        meta: { title: "Login" },
         beforeEnter: (to, from) => {
             if (!useAuthenticatedStore().id && !useAuthenticatedStore().user && !useAuthenticatedStore().authenticated) {
                 return true;
@@ -21,6 +22,7 @@ export const guestRoutes = [
     {
         path: "/register",
         component: Register,
+        meta: { title: "Register" },
         beforeEnter: (to, from) => {
             if (!useAuthenticatedStore().id && !useAuthenticatedStore().user && !useAuthenticatedStore().authenticated) {
                 return true;

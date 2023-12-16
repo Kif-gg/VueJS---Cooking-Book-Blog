@@ -10,6 +10,7 @@ export const commonRoutes = [
     {
         path: "/",
         component: Home,
+        meta: { title: "Home" },
         beforeEnter: (to, from) => {
             if (verifyString('supersecret', useAuthenticatedStore().user) && !useAuthenticatedStore().id && useAuthenticatedStore().user && useAuthenticatedStore().authenticated) {
                 return '/secret-path/admin/dashboard';
@@ -18,12 +19,14 @@ export const commonRoutes = [
     },
     {
         path: "/recipes",
-        component: Recipes
+        component: Recipes,
+        meta: { title: "Explore recipes" },
     },
     {
         path: "/recipes/:id",
         component: RecipeDetails,
         name: 'RecipeDetails',
+        meta: { title: "Recipe details" },
         beforeEnter: (to, from) => {
             const validRecipeID = useRecipesStore().recipes.find(rec => rec._id === to.params.id);
             if (validRecipeID || useRecipesStore().currentRecipe._id == to.params.id) {
@@ -36,6 +39,7 @@ export const commonRoutes = [
     {
         path: "/about",
         component: About,
+        meta: { title: "About the chef" },
         beforeEnter: (to, from) => {
             if (verifyString('supersecret', useAuthenticatedStore().user) && !useAuthenticatedStore().id && useAuthenticatedStore().user && useAuthenticatedStore().authenticated) {
                 return '/secret-path/admin/dashboard';

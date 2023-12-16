@@ -13,7 +13,8 @@ const routes = [
     ...adminRoutes,
     {
         path: '/:catchAll(.*)*',
-        component: NotFound
+        component: NotFound,
+        meta: { title: "Uh-oh..!" },
     }
 ];
 
@@ -25,6 +26,8 @@ const router = createRouter({
 const componentsToCheckEditMode = ['RecipeDetails', 'Profile', 'EditRecipe'];
 
 router.beforeEach((to, from) => {
+    const title = to.meta.title;
+    document.title = title;
     const fromComponentName = from.name || '';
     const toComponentName = to.name || '';
 

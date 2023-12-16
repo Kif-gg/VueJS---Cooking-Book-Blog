@@ -10,6 +10,7 @@ export const userRoutes = [
         path: "/profile",
         component: Profile,
         name: 'Proifle',
+        meta: { title: "Profile" },
         beforeEnter: (to, from) => {
             const confirmedUser = verifyString('regularsecret', useAuthenticatedStore().user)
             if (useAuthenticatedStore().id && confirmedUser && useAuthenticatedStore().authenticated) {
@@ -22,6 +23,7 @@ export const userRoutes = [
     {
         path: "/profile/favorites",
         component: Favorites,
+        meta: { title: "Favorite recipes" },
         beforeEnter: (to, from) => {
             const confirmedUser = verifyString('regularsecret', useAuthenticatedStore().user)
             if (useAuthenticatedStore().id && confirmedUser && useAuthenticatedStore().authenticated) {
@@ -34,6 +36,7 @@ export const userRoutes = [
     {
         path: "/profile/reviews",
         component: Reviews,
+        meta: { title: "User's reviews" },
         beforeEnter: (to, from) => {
             const confirmedUser = verifyString('regularsecret', useAuthenticatedStore().user)
             if (useAuthenticatedStore().id && confirmedUser && useAuthenticatedStore().authenticated) {
