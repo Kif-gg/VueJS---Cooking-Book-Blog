@@ -190,7 +190,7 @@ async function deleteUser(user) {
     }
     const deletedResult = await Review.deleteMany({ userId: user._id });
     await User.findByIdAndDelete(user._id);
-    return deletedResult;
+    return deletedResult.deletedCount;
 };
 
 module.exports = {
